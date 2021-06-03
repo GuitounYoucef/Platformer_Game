@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/sound">
+        <file>sound/overworld.ogg</file>
+        <file>sound/Big Jump.wav</file>
+        <file>sound/Bowser Die.wav</file>
+        <file>sound/Skid.wav</file>
+        <file>sound/1up.wav</file>
+        <file>sound/Flagpole.wav</file>
+        <file>sound/Fire Ball.wav</file>
+        <file>sound/Warp.wav</file>
+        <file>sound/Kick.wav</file>
+        <file>sound/Squish.wav</file>
+        <file>sound/Bump.wav</file>
+        <file>sound/Jump.wav</file>
+        <file>sound/Powerup.wav</file>
+        <file>sound/Beep.wav</file>
+        <file>sound/Thwomp.wav</file>
+        <file>sound/Game Over.wav</file>
+        <file>sound/Die.wav</file>
+        <file>sound/Vine.wav</file>
+        <file>sound/Item.wav</file>
+        <file>sound/Coin.wav</file>
+        <file>sound/Enemy Fire.wav</file>
+        <file>sound/Pause.wav</file>
+        <file>sound/break.mp3</file>
+    </qresource>
+</RCC>
