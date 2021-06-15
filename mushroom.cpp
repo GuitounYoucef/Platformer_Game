@@ -2,6 +2,7 @@
 #include<QDebug>
 #include<QRandomGenerator>
 #include"platform.h"
+#include"player.h"
 Mushroom::Mushroom()
 {
     int x = (QRandomGenerator::global()->generate()) %4;
@@ -41,44 +42,67 @@ void Mushroom::start()
     AirState=-1;
     yAnimationUp->stop();
     yAnimationUp->setStartValue(y());
-    yAnimationUp->setEndValue(y()-55);
+    yAnimationUp->setEndValue(y()-65);
     yAnimationUp->setDuration(1000);
     yAnimationUp->setEasingCurve(QEasingCurve::Linear);
     yAnimationUp->start();
     connect(yAnimationUp,&QPropertyAnimation::finished,[=](){
-        xAnimation->setStartValue(x());
-        xAnimation->setEndValue(x()+3000);
-        xAnimation->setDuration(10000);
-        xAnimation->setEasingCurve(QEasingCurve::Linear);
-        direction=0;
-        groundState=1;
-        AirState=0;
-        xAnimation->start();
-        connect(xAnimation,&QPropertyAnimation::finished,[=](){
-            delete this;
+    walk(1);
         });
-    });
 
+}
+
+void Mushroom::walk(int direc)
+{
+    xAnimation->stop();
+    xAnimation->setStartValue(x());
+    if (direc==1)
+        xAnimation->setEndValue(x()+3000);
+    else xAnimation->setEndValue(x()-3000);
+    xAnimation->setDuration(10000);
+    xAnimation->setEasingCurve(QEasingCurve::Linear);
+    groundState=direc;
+    AirState=0;
+    xAnimation->start();
 }
 
 //******************************   --Collision Detection --  ******************************************
 
-bool Mushroom::collideX()
+QString Mushroom::collideX()
 {
+    qreal t;
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
     foreach(QGraphicsItem * item,collidingItems)
     {
         Platform * platform =dynamic_cast<Platform*>(item);
+        InanimateObject * inanimateObject =dynamic_cast<InanimateObject*>(item);
+        Player * player =dynamic_cast<Player*>(item);
         if ((platform))
         {
-            qreal t;
+
             t=this->y();
-            if ((item->y()>t) && (item->y()<t+pixmap().width()))
+            if ((item->y()<t) )
                 if (((direction==0) && (item->x()>=this->x())) || ((direction==1) && (item->x()<=this->x())) )
-                    return true;
+                    return "collide";
+        }
+        else
+            if (inanimateObject)
+            {
+                t=this->y();
+                if ((inanimateObject->y()<t) )
+                    if (((direction==0) && (inanimateObject->x()>=this->x())) || ((direction==1) && (inanimateObject->x()<=this->x())) )
+                        return "collide";
+
+            }
+        else
+        if (player)
+        {
+            player->powerup();
+            return "player";
+
         }
     }
-    return false;
+    return "notcolliding";
 }
 //-------------------------------------------------------------------------------------
 QString Mushroom::collideY()
@@ -87,12 +111,10 @@ QString Mushroom::collideY()
     foreach(QGraphicsItem * item,collidingItems)
     {
         Platform * platform =dynamic_cast<Platform*>(item);
-        if (platform)
+        if ((platform) && (AirState!=-1))
         {
                   if ((platform->getPlatformType()!=-1) || (platform->getPlatformType()!=4))
                     return "foots";
-
-
         }
     }
     return "notcolliding";
@@ -118,32 +140,44 @@ void Mushroom::setY(qreal y)
         if ((collideY()=="foots") && (AirState==2))
         {
             stopFalling();
-            m_y=y-27;
+            m_y=y-10;
             if (AirState!=0)
                 AirState=0;
-
         }
-
     }
-    setPos(QPoint(0,0)+QPoint(x(),m_y));
+    setPos(x(),m_y);
 }
 //-------------------------------------------------------------------------------------
 void Mushroom::setX(qreal x)
 {
     m_x = x;
-    if (collideX())
+    setPos(m_x,y());
+    if (collideX()=="collide")
     {
-        if (direction==0)
-            m_x = x-10;
+        if (groundState==1)
+        {
+            m_x = x-20;
+            xAnimation->stop();
+            walk(2);
+        }
         else
-            m_x = x+10;
-        xAnimation->stop();
+        {
+          //  m_x = x+20;
+            walk(1);
+        }
     }
+    else
+        if (collideX()=="player")
+        {
+
+            delete this;
+        }
     else
         if (collideY()=="notcolliding")
         {
             if (AirState==0)
-                fall(500-y(),y(),500);
+                fall(1000-y(),y(),500);
+
         }
-    setPos(QPoint(0,0)+QPoint(m_x,y()));
+
 }

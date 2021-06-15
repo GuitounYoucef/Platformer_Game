@@ -1,4 +1,4 @@
-#include "myscene.h"
+﻿#include "myscene.h"
 #include<QGraphicsScene>
 #include<QGraphicsView>
 #include<QDebug>
@@ -45,7 +45,7 @@ MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-400,10000,720, parent)
      backgroundMusic=new QMediaPlayer();
      backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
      backgroundMusic->setVolume(50);
-     backgroundMusic->play();
+   //  backgroundMusic->play();
 
 
 }

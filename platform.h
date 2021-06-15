@@ -56,7 +56,7 @@ private:
     QPropertyAnimation * touchedAnimationDown;
     QSequentialAnimationGroup * SeqtouchedAnimation;
 
-    int numberItem=0;
+    int numberItem=1;
 
     QMediaPlayer *collapseSound;
 
@@ -68,7 +68,7 @@ private:
     int xPos,yPos;
 
     int typePlatform;
-    QTimer *timerStartDestroy;
+    QTimer *firstToutchtimer;
     QTimer *timerStartTouch;
 
     qreal m_y;

@@ -26,7 +26,7 @@ public:
     int line;
     int spriteColumn;
     int frameTimer=80;
-    int frameDiraction=1;
+    int frameDirection=1;
     int direction=0;
 
 };

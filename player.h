@@ -31,6 +31,7 @@ public:
     void addBullet();
     void walk(int direct,BackgroundImage *background,bool withCamera);
     void stopWalking();
+    void powerup();
 
     void Up();
     void Down();
@@ -73,6 +74,7 @@ private:
 
 
     QMediaPlayer *jumpSound;
+    QMediaPlayer *powerupSound;
 //*********************************************
 
     int playerWidth=75;

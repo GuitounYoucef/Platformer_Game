@@ -77,17 +77,13 @@ Platform::Platform(int platformType,int x,int y)
         SeqtouchedAnimation=new QSequentialAnimationGroup;
         touchedAnimationUp=new QPropertyAnimation(this,"y");
         touchedAnimationDown=new QPropertyAnimation(this,"y");
-        mushroom= new Mushroom();
-        mushroom->setY(mushroom->y()+5);
-        addToGroup(mushroom);
-        numberItem=1;
         break;}
 
 
     }
 xPos=x;
 yPos=y;
-timerStartDestroy= new QTimer();
+firstToutchtimer= new QTimer();
 setY(y);
 setX(x);
 
@@ -106,26 +102,28 @@ void Platform::destroyPlatform()
     if (typePlatform==3)
     {
     collapseSound->play();
-    connect(timerStartDestroy, &QTimer::timeout, this,[=](){
+    connect(firstToutchtimer, &QTimer::timeout, this,[=](){
       Graphicsplateform->setVisible(false);
       typePlatform=-1;
       removeFromGroup(Graphicsplateform);
      for(int i=0;i<15;i++)
        addToGroup(briksArray[i]);
      BrikAnimation->start();
-     timerStartDestroy->stop();
+     firstToutchtimer->stop();
       // addToGroup(Graphicsplateform);
       connect(BrikAnimation, &QParallelAnimationGroup::finished, this,[=](){
           delete this;
       });
 
       });
-        timerStartDestroy->start(20);
+        firstToutchtimer->start(20);
      }
 }
 
 void Platform::Touched()
 {
+
+    touchedAnimationUp->stop();
     touchedAnimationUp->setStartValue(yPos);
     touchedAnimationUp->setEndValue(yPos-20);
     touchedAnimationUp->setDuration(150);
@@ -138,10 +136,18 @@ void Platform::Touched()
         touchedAnimationDown->setDuration(300);
         touchedAnimationDown->setEasingCurve(QEasingCurve::Linear);
         touchedAnimationDown->start();
-        if(numberItem>0)
         connect(touchedAnimationDown,&QPropertyAnimation::finished,[=](){
-           numberItem=-numberItem;
+
+           if (numberItem>0)
+           {
+           mushroom= new Mushroom();
+           mushroom->setX(x());
+           mushroom->setY(y());
+           scene()->addItem(mushroom);
+          // addToGroup(mushroom);
            mushroom->start();
+           numberItem=-numberItem;
+           }
         });
 
     });

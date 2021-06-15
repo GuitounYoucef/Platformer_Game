@@ -12,7 +12,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
 {
     currentFrame = 0;
     spriteImageBigMario = new QPixmap(QPixmap(":/images/BigMarioSprite.png"));
-    spriteImageSmallMario = new QPixmap(QPixmap(":/images/mario-sprite-png.png"));
+    spriteImageSmallMario = new QPixmap(QPixmap(":/images/marioWalkRight.png"));
     backgroundAnimation = new QPropertyAnimation(background,"x");
     imageXpos=background->x();
 
@@ -41,7 +41,8 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     jumpSound=new QMediaPlayer();
     jumpSound->setMedia(QUrl("qrc:/sound/sound/Jump.wav"));
 
-
+    powerupSound=new QMediaPlayer();
+    powerupSound->setMedia(QUrl("qrc:/sound/sound/Powerup.wav"));
 
 }
 
@@ -138,6 +139,16 @@ void Player::stopWalking()
  xAnimation->stop();
  groundState=0;
  frameTimer=80;
+}
+
+void Player::powerup()
+{
+if (marioSize==0){
+    setMarioSize(1);
+}
+powerupSound->stop();
+powerupSound->play();
+
 }
 //-------------------------------------------------------------------------------------
 void Player::Up()
@@ -303,7 +314,6 @@ void Player::setMarioSize(int size)  //0:small   1:big
         connect(timerSmallMario, &QTimer::timeout, this, &Player::nextFrameSmallMario);
         timerSmallMario->start(frameTimer);
         setY(y()+playerHeight);
-
     }
     else
     {
@@ -327,10 +337,6 @@ void Player::nextFrameBigMario()
             frameTimer=frameTimer*2;
         else if (frameTimer>160)
             frameTimer=frameTimer/2;
-        if (direction==0) // left
-            line=2535;
-        else if (direction==1) // right
-            line=2796;
     }
     else
     {
@@ -349,26 +355,26 @@ void Player::nextFrameBigMario()
             else line=256;
         }
     }
-    if (frameDiraction==1)
+    if (frameDirection==1)
         currentFrame += 256;
     else currentFrame -= 256;
     if ((currentFrame >= spriteColumn ) ){
         if (spriteColumn==3800)
         {
             currentFrame =0;
-            frameDiraction=+1;
+            frameDirection=+1;
         }
         else
         {
             currentFrame -= 256;
 
-            frameDiraction=-1;
+            frameDirection=-1;
         }
     }
     if (currentFrame <0 )
     {
         currentFrame =0;
-        frameDiraction=1;
+        frameDirection=1;
     }
     timerBigMario->stop();
     timerBigMario->start(frameTimer);
@@ -398,17 +404,17 @@ void Player::nextFrameSmallMario()
         else if (direction==0)
             line=0;
         else line=128;
-    if (frameDiraction==1)
+    if (frameDirection==1)
         currentFrame += 128;
     else currentFrame = currentFrame-256/2;
     if ((currentFrame >= 4000/2 ) ){
         currentFrame -= 128;
-        frameDiraction=-1;
+        frameDirection=-1;
     }
     if (currentFrame <0 )
     {
         currentFrame =0;
-        frameDiraction=1;
+        frameDirection=1;
     }
     timerSmallMario->stop();
     timerSmallMario->start(frameTimer);

@@ -30,5 +30,7 @@
         <file>images/piranha.png</file>
         <file>images/piranha2.png</file>
         <file>images/pipe.png</file>
+        <file>images/mario.png</file>
+        <file>images/BigMarioWalkRight.png</file>
     </qresource>
 </RCC>

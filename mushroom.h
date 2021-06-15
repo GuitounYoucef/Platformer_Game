@@ -23,16 +23,18 @@ public:
     qreal y() const;
 
     void start();
+    void walk(int direc);
 
 public slots:
     void setX(qreal x);
     void setY(qreal y);
     QString collideY();
-    bool collideX();
+    QString collideX();
 
 signals:
 private:
     QTimer *timer;
+
 
 
 
