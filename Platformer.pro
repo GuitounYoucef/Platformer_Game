@@ -19,6 +19,7 @@ SOURCES += \
     bullet.cpp \
     cloud.cpp \
     coin.cpp \
+    goomba.cpp \
     inanimateobject.cpp \
     main.cpp \
     mushroom.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     bullet.h \
     cloud.h \
     coin.h \
+    goomba.h \
     inanimateobject.h \
     mushroom.h \
     myscene.h \

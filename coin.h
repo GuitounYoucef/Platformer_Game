@@ -28,8 +28,8 @@ private:
     QMediaPlayer *coinSound;
 
     QPainterPath shape() const Q_DECL_OVERRIDE;
-     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-   QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
 
 };
 

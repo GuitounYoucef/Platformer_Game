@@ -20,6 +20,7 @@
 #include "questbox.h"
 #include "piranha.h"
 #include "pipe.h"
+#include "goomba.h"
 
 
 
@@ -56,6 +57,7 @@ private:
  Platform *questbox;
  Piranha *piranha;
  Pipe *pipe;
+ Goomba *goomba;
 
  QMediaPlayer *backgroundMusic;
  QTimer *timer;

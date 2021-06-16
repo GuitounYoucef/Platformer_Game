@@ -32,5 +32,6 @@
         <file>images/pipe.png</file>
         <file>images/mario.png</file>
         <file>images/BigMarioWalkRight.png</file>
+        <file>images/goomba.png</file>
     </qresource>
 </RCC>

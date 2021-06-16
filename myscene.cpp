@@ -122,7 +122,9 @@ void MyScene::addPlatform()
     addItem(pipe);
     }
 
-
+    goomba= new Goomba();
+    goomba->setPos(650,-350);
+    addItem(goomba);
 }
 
 void MyScene::addCloud()
