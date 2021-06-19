@@ -78,9 +78,14 @@ Platform::Platform(int platformType,int x,int y)
         touchedAnimationUp=new QPropertyAnimation(this,"y");
         touchedAnimationDown=new QPropertyAnimation(this,"y");
         break;}
-
+    case 6:{
+        Graphicsplateform = new QGraphicsPixmapItem(QPixmap(":/images/metalBlok.png"));
+        addToGroup(Graphicsplateform);
+        typePlatform=6;
+        break;}
 
     }
+
 xPos=x;
 yPos=y;
 firstToutchtimer= new QTimer();

@@ -33,5 +33,12 @@
         <file>images/mario.png</file>
         <file>images/BigMarioWalkRight.png</file>
         <file>images/goomba.png</file>
+        <file>images/goombaWalkRight.png</file>
+        <file>images/goombaWalkLeft.png</file>
+        <file>images/koopaWalkleft.png</file>
+        <file>images/koopaWalkRight.png</file>
+        <file>images/spinyWalkRight.png</file>
+        <file>images/spinyWalkLeft.png</file>
+        <file>images/metalBlok.png</file>
     </qresource>
 </RCC>

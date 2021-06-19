@@ -19,8 +19,10 @@ SOURCES += \
     bullet.cpp \
     cloud.cpp \
     coin.cpp \
+    enemy.cpp \
     goomba.cpp \
     inanimateobject.cpp \
+    koopa.cpp \
     main.cpp \
     mushroom.cpp \
     myscene.cpp \
@@ -29,6 +31,7 @@ SOURCES += \
     platform.cpp \
     player.cpp \
     questbox.cpp \
+    spiny.cpp \
     tree.cpp \
     walkers.cpp \
     widget.cpp
@@ -39,8 +42,10 @@ HEADERS += \
     bullet.h \
     cloud.h \
     coin.h \
+    enemy.h \
     goomba.h \
     inanimateobject.h \
+    koopa.h \
     mushroom.h \
     myscene.h \
     pipe.h \
@@ -48,6 +53,7 @@ HEADERS += \
     platform.h \
     player.h \
     questbox.h \
+    spiny.h \
     tree.h \
     walkers.h \
     widget.h

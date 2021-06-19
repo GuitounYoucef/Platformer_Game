@@ -77,30 +77,27 @@ void MyScene::addPlatform()
 //    addItem(platform);
     int nextPlatform=-1000;
     for (int i=1; i<=10 ;i++ ) {
-
-
-
-
     platform = new Platform(1,nextPlatform,300);
     addItem(platform);
     nextPlatform=nextPlatform+platform->Graphicsplateform->pixmap().width();
-
-
-
-
-
      }
+
+    nextPlatform=2600;
+    for (int i=1; i<=10 ;i++ ) {
+    blockMetal = new Platform(6,nextPlatform,180);
+    addItem(blockMetal);
+    nextPlatform=nextPlatform+blockMetal->Graphicsplateform->pixmap().width();
+     }
+
+
     nextPlatform=-500;
     for (int i=1; i<=10 ;i++ ) {
-
      if (i%2==0)
      {
     blockBrikcs =new Platform(3,nextPlatform,-150);
     addItem(blockBrikcs);
-
      }else
     {
-
     questbox= new Platform(4,nextPlatform,-150);
     addItem(questbox);
      }
@@ -122,9 +119,23 @@ void MyScene::addPlatform()
     addItem(pipe);
     }
 
-    goomba= new Goomba();
-    goomba->setPos(650,-350);
-    addItem(goomba);
+    koopa= new Koopa(650,-450);
+
+    addItem(koopa);
+
+//    goomba[1]= new Goomba();
+//    goomba[1]->setPos(0,-150);
+//    addItem(goomba[1]);
+
+    goomba[1]= new Goomba(0,-250);
+
+    addItem(goomba[1]);
+
+    spiny= new Spiny(-300,-50);
+
+    addItem(spiny);
+
+
 }
 
 void MyScene::addCloud()

@@ -21,7 +21,8 @@
 #include "piranha.h"
 #include "pipe.h"
 #include "goomba.h"
-
+#include "koopa.h"
+#include "spiny.h"
 
 
 class MyScene : public QGraphicsScene
@@ -52,12 +53,15 @@ private:
  Cloud *cloud1;
  BackgroundImage *background;
  Platform *blockBrikcs;
+ Platform *blockMetal;
  Tree * tree;
  Coin *coin;
  Platform *questbox;
  Piranha *piranha;
  Pipe *pipe;
- Goomba *goomba;
+ Goomba *goomba[10];
+ Koopa *koopa;
+ Spiny *spiny;
 
  QMediaPlayer *backgroundMusic;
  QTimer *timer;
