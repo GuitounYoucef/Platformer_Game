@@ -1,4 +1,5 @@
 #include "piranha.h"
+#include "player.h"
 
 Piranha::Piranha()
 {
@@ -39,6 +40,15 @@ void Piranha::setY(qreal y)
 {
     m_y = y;
     setPos(x(),m_y);
+    QList<QGraphicsItem*> collidingItems=this->collidingItems();
+    foreach(QGraphicsItem * item,collidingItems)
+    {
+        Player * player =dynamic_cast<Player*>(item);
+        if (player)
+        {
+          player->die();
+        }
+    }
 }
 
 void Piranha::nextFrame()

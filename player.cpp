@@ -44,6 +44,14 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     powerupSound=new QMediaPlayer();
     powerupSound->setMedia(QUrl("qrc:/sound/sound/Powerup.wav"));
 
+    DieSound=new QMediaPlayer();
+    DieSound->setMedia(QUrl("qrc:/sound/sound/Die.wav"));
+
+    backgroundMusic=new QMediaPlayer();
+    backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
+    backgroundMusic->setVolume(50);
+    backgroundMusic->play();
+
 }
 
 
@@ -53,7 +61,7 @@ void Player::Jump()
     UpinAir=false;
     frameTimer=playerHeight/24;
     currentFrame=0;
-    Up();
+    Up(playerHeight*3);
     Down();
 }
 //-------------------------------------------------------------------------------------
@@ -115,8 +123,8 @@ void Player::walk(int dirc,BackgroundImage *background,bool withCamera)
     xAnimation->setDuration(duration);
     ScrollAnimation->setDuration(duration);
     backgroundAnimation->setDuration(duration);
-    if  ((withCamera) &&( ( x()-950 >(xScrollPos->value()+viewWidth/6) && (direction==0)  )
-                          || (( (x()-950 <(xScrollPos->value()-viewWidth/6) ) && (direction==1)))))
+    if  ((withCamera) &&( ( x()-950 >(xScrollPos->value()+viewWidth/12) && (direction==0)  )
+                          || (( (x()-950 <(xScrollPos->value()-viewWidth/12) ) && (direction==1)))))
     {
         playerScroll->start();
         connect(playerScroll,&QPropertyAnimation::finished,[=](){
@@ -150,8 +158,17 @@ powerupSound->stop();
 powerupSound->play();
 
 }
+
+void Player::die()
+{
+marioSize=-1;
+Up(playerHeight);
+Down();
+backgroundMusic->stop();
+DieSound->play();
+}
 //-------------------------------------------------------------------------------------
-void Player::Up()
+void Player::Up(int distance)
 {
     if (AirState==0)
     {
@@ -161,9 +178,9 @@ void Player::Up()
     jumpSound->stop();
     jumpSound->play();
     yAnimationUp->setStartValue(curPosY);
-    yAnimationUp->setEndValue(curPosY - playerHeight*3);
+    yAnimationUp->setEndValue(curPosY - distance);
     yAnimationUp->setEasingCurve(QEasingCurve::OutQuint);
-    yAnimationUp->setDuration(playerHeight*4);
+    yAnimationUp->setDuration(distance/3*4);
     yAnimationUp->start();
     }
 }
@@ -173,7 +190,6 @@ void Player::Down()
     connect(yAnimationUp,&QPropertyAnimation::finished,[=](){
         if (y()< groundPosition)
         {
-
             UpinAir=false;
             AirState=2;
             fall(groundPosition-y(),y(),groundPosition);
@@ -194,7 +210,7 @@ bool Player::collideX()
         {
             qreal t;
             t=this->y();
-            if (item->y()<t)
+            if (item->y()<t+playerHeight/2)
                 if (((direction==0) && (item->x()>=this->x())) || ((direction==1) && (item->x()<=this->x())) )
                     return true;
         }
@@ -229,7 +245,7 @@ QString Player::collideY()
                     return "head";
             }
             else
-                if ((item->y()>t+playerHeight*4/5))
+                if ((item->y()>t))
                 {
                     qDebug()<<"foots";
                     return "foots";
@@ -256,7 +272,7 @@ void Player::setY(qreal y)
     m_y = y;
     if (collideY()!="notcolliding") // colliding
     {
-        if ((collideY()=="foots") && (AirState==2))
+        if ((collideY()=="foots") && (marioSize!=-1) && (AirState==2))
         {
             yAnimationDown->stop();
             m_y=y-10;
@@ -333,6 +349,11 @@ void Player::nextFrameBigMario()
     if (AirState!=0)  // jumping animation
     {
         spriteColumn=2834;
+        if (direction==0) // left
+            line=2535;
+        else if (direction==1) // right
+            line=2796;
+
         if((frameTimer<playerHeight*7/4) &&(AirState==1) )
             frameTimer=frameTimer*2;
         else if (frameTimer>160)

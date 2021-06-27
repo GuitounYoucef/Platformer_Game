@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "player.h"
 
 Enemy::Enemy()
 {
@@ -85,7 +86,8 @@ void Enemy::setX(qreal x)
     m_x = x;
     setPos(m_x,y());
     qDebug()<<xAnimation->currentTime();
-    if (xAnimation->currentTime() >=6000)
+
+    if ((xAnimation->currentTime() >=6000) || collideX()=="platform")
       {
        if (groundState==1)
            groundState=2;
@@ -131,6 +133,29 @@ QString Enemy::collideY()
                   if ((platform->getPlatformType()!=-1) || (platform->getPlatformType()!=4))
                     return "foots";
         }
+    }
+    return "notcolliding";
+}
+
+QString Enemy::collideX()
+{
+    QList<QGraphicsItem*> collidingItems=this->collidingItems();
+    foreach(QGraphicsItem * item,collidingItems)
+    {
+//        Platform * platform =dynamic_cast<Platform*>(item);
+//        if (platform)
+//        {
+//           return "platform";
+//         }
+//        else
+//        {
+        Player * player =dynamic_cast<Player*>(item);
+        if (player)
+        {
+          player->die();
+          return "plyer";
+        }
+//        }
     }
     return "notcolliding";
 }

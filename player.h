@@ -32,8 +32,9 @@ public:
     void walk(int direct,BackgroundImage *background,bool withCamera);
     void stopWalking();
     void powerup();
+    void die();
 
-    void Up();
+    void Up(int distance);
     void Down();
     QString collideY();
     bool collideX();
@@ -72,9 +73,10 @@ private:
      QParallelAnimationGroup * playerScroll; // group animation player+scrollBar
      int viewWidth;
 
-
+    QMediaPlayer *backgroundMusic;
     QMediaPlayer *jumpSound;
     QMediaPlayer *powerupSound;
+    QMediaPlayer *DieSound;
 //*********************************************
 
     int playerWidth=75;
@@ -94,7 +96,7 @@ private:
     bool collideStat=true;
 
     QPainter *painter;
-    int marioSize=1; // 0:small , 1:Big
+    int marioSize=1; // 0:small , 1:Big, -1:die
 
     QPixmap *spriteImageBigMario;   // In this QPixmap object will be placed sprite
     QPixmap *spriteImageSmallMario;

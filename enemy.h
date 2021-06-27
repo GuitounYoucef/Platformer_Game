@@ -34,6 +34,7 @@ public slots:
     void setX(qreal x);
     void setY(qreal y);
     QString collideY();
+    QString collideX();
     signals:
 
 private:

@@ -7,7 +7,8 @@ Pipe::Pipe(int pipeType)
     addToGroup(GraphicsPipe);
     if (pipeType==2){
      piranha= new Piranha();
-     piranha->setPos(x()+20,y()-50);
+     piranha->setX(x()+20);
+     piranha->setY(y());
      addToGroup(piranha);
     }
 }

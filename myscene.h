@@ -63,7 +63,7 @@ private:
  Koopa *koopa;
  Spiny *spiny;
 
- QMediaPlayer *backgroundMusic;
+
  QTimer *timer;
  QScrollBar* yPos;
 
