@@ -13,8 +13,10 @@ Briks::Briks(int brikSize)
         break;
     }
 
-int x = (QRandomGenerator::global()->generate()) %360;
-setRotation(x);
+angle=(angle+(QRandomGenerator::global()->generate()) %45);
+timer = new QTimer();
+connect(timer, &QTimer::timeout, this, &Briks::rotate);
+timer->start(50);
 setZValue(-5);
 }
 
@@ -28,6 +30,13 @@ qreal Briks::x() const
     return m_x;
 }
 
+void Briks::rotate()
+{
+
+    angle=angle+45;
+    setRotation(angle);
+}
+
 void Briks::setY(qreal y)
 {
     m_y = y;
@@ -39,3 +48,5 @@ void Briks::setX(qreal x)
     m_x = x;
     setPos(m_x,y());
 }
+
+

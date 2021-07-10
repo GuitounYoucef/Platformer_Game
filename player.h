@@ -29,7 +29,8 @@ public:
     void addBackground();
     void Jump();
     void addBullet();
-    void walk(int direct,BackgroundImage *background,bool withCamera);
+    void walk(int direct,BackgroundImage *background);
+    void fall(int distance, int startValue, int groundPosition);
     void stopWalking();
     void powerup();
     void die();
@@ -69,8 +70,11 @@ public slots:
 
 private:
      QScrollBar *scroll;
-     QScrollBar* xScrollPos;
-     QParallelAnimationGroup * playerScroll; // group animation player+scrollBar
+     QScrollBar *xScrollPos;
+     QScrollBar *yScrollPos;
+     QParallelAnimationGroup *playerScroll; // group animation player+scrollBar
+     QParallelAnimationGroup *playeryAxeScroll;
+     QParallelAnimationGroup *playeryAxeScrollDown;
      int viewWidth;
 
     QMediaPlayer *backgroundMusic;
@@ -83,7 +87,9 @@ private:
     int playerHeight=185;
 //*********************************************
 
-    QPropertyAnimation * ScrollAnimation;  
+    QPropertyAnimation * xScrollAnimation;
+    QPropertyAnimation * yScrollAnimationUp;
+    QPropertyAnimation * yScrollAnimationDown;
     QPropertyAnimation * backgroundAnimation;
     qreal imageXpos;
 
@@ -108,8 +114,8 @@ private:
    void nextFrameBigMario();
    void nextFrameSmallMario();
    QPainterPath shape() const Q_DECL_OVERRIDE;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-  QRectF boundingRect() const;
+   void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+   QRectF boundingRect() const;
 
 
 

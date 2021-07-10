@@ -25,6 +25,7 @@ Widget::Widget(QWidget *parent)
     scene->addPlayer(ui->graphicsView);
     scene->addCloud();
 
+    ui->graphicsView->setGeometry(-900,-1000,10000,2000);
     ui->graphicsView->setScene(scene);
 
 

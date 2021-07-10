@@ -14,6 +14,7 @@ void Enemy::start(int frametime)
     timer->start(frametime);
     groundState=2;
     fall(2000,y(),500);
+
 }
 void Enemy::nextFrame()
 {
@@ -28,6 +29,14 @@ void Enemy::nextFrame()
         currentFrame=currentFrame-width;
         if (currentFrame==0)
             currentFrame=width*(frameNumber-1);
+    }
+    //if (Heightsize<height)
+    {
+    if (Heightsize<80)
+    Heightsize=Heightsize+55;
+    else Heightsize=Heightsize-55;
+    *SpriteImageWalkRight=SpriteImageWalkRight->scaled(1694, Heightsize, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+
     }
     update(0,0,width,height);
 }

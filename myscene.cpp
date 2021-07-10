@@ -8,7 +8,7 @@
 
 
 
-MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-400,10000,720, parent)
+MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-1000,10000,1400, parent)
 
 {
     pixItem = new QGraphicsPixmapItem(QPixmap(":/images/BackgroundImage.png"));
@@ -213,11 +213,11 @@ void MyScene::keyPressEvent(QKeyEvent *event)
     switch(event->key()) {
        case Qt::Key_Right :
     {
-          player->walk(0,background,true);
+          player->walk(0,background);
           break;}
       case Qt::Key_Left :
     {
-       player->walk(1,background,true);
+       player->walk(1,background);
        break;
     }
     case Qt::Key_Up :

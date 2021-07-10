@@ -30,12 +30,25 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     viewWidth= 1900;
 
     xScrollPos=graphicsView->horizontalScrollBar();
+    yScrollPos=graphicsView->verticalScrollBar();
 
     xScrollPos->setValue(-950);
-    ScrollAnimation = new QPropertyAnimation(xScrollPos,"value");
+    xScrollAnimation = new QPropertyAnimation(xScrollPos,"value");
+    yScrollAnimationUp = new QPropertyAnimation(yScrollPos,"value");
+    yScrollAnimationDown= new QPropertyAnimation(yScrollPos,"value");
+
     playerScroll = new QParallelAnimationGroup;
+    playeryAxeScroll = new QParallelAnimationGroup;
+    playeryAxeScrollDown = new QParallelAnimationGroup;
+
+    playeryAxeScroll->addAnimation(yAnimationUp);
+    playeryAxeScroll->addAnimation(yScrollAnimationUp);
+
+    playeryAxeScrollDown->addAnimation(yAnimationDown);
+    playeryAxeScrollDown->addAnimation(yScrollAnimationDown);
+
     playerScroll->addAnimation(xAnimation);
-    playerScroll->addAnimation(ScrollAnimation);
+    playerScroll->addAnimation(xScrollAnimation);
     playerScroll->addAnimation(backgroundAnimation);
 
     jumpSound=new QMediaPlayer();
@@ -50,7 +63,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     backgroundMusic=new QMediaPlayer();
     backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
     backgroundMusic->setVolume(50);
-    backgroundMusic->play();
+   // backgroundMusic->play();
 
 }
 
@@ -73,14 +86,14 @@ void Player::addBullet()
     bullet->move();
 }
 //-------------------------------------------------------------------------------------
-void Player::walk(int dirc,BackgroundImage *background,bool withCamera)
+void Player::walk(int dirc,BackgroundImage *background)
 {
     frameTimer=35;
     direction=dirc;
     int step;
     int duration;
     xAnimation->stop();
-    ScrollAnimation->stop();
+    xScrollAnimation->stop();
     backgroundAnimation->stop();
     if (AirState==0)
     {
@@ -93,37 +106,35 @@ void Player::walk(int dirc,BackgroundImage *background,bool withCamera)
         duration=2100;
     }
     xAnimation->setStartValue(x());
-    ScrollAnimation->setStartValue(xScrollPos->value());
+    xScrollAnimation->setStartValue(xScrollPos->value());
     backgroundAnimation->setStartValue(background->x());
-    if (direction==0)                   // 0:walk Raight ; 1:walk Left
+    if (direction==0)                   // 0:walk Right ; 1:walk Left
     {
         groundState=1;
         xAnimation->setEndValue(x()+step);
-        ScrollAnimation->setEndValue(xScrollPos->value()+step);
+        xScrollAnimation->setEndValue(xScrollPos->value()+step);
         if(background->pixmap().width()+background->x()<scene()->width()-600)
             backgroundAnimation->setEndValue(background->x()+step-200);
         else
             backgroundAnimation->setEndValue(background->x());
-
     }
     else
     {
         groundState=2;
         xAnimation->setEndValue(x()-step);
-        ScrollAnimation->setEndValue(xScrollPos->value()-step);
+        xScrollAnimation->setEndValue(xScrollPos->value()-step);
         if(background->x()>-950)
             backgroundAnimation->setEndValue(background->x()-step+200);
         else
             backgroundAnimation->setEndValue(background->x());
-
     }
     xAnimation->setEasingCurve(QEasingCurve::Linear);
-    ScrollAnimation->setEasingCurve(QEasingCurve::Linear);
+    xScrollAnimation->setEasingCurve(QEasingCurve::Linear);
     backgroundAnimation->setEasingCurve(QEasingCurve::Linear);
     xAnimation->setDuration(duration);
-    ScrollAnimation->setDuration(duration);
+    xScrollAnimation->setDuration(duration);
     backgroundAnimation->setDuration(duration);
-    if  ((withCamera) &&( ( x()-950 >(xScrollPos->value()+viewWidth/12) && (direction==0)  )
+    if  (( ( x()-950 >(xScrollPos->value()+viewWidth/12) && (direction==0)  )
                           || (( (x()-950 <(xScrollPos->value()-viewWidth/12) ) && (direction==1)))))
     {
         playerScroll->start();
@@ -156,7 +167,6 @@ if (marioSize==0){
 }
 powerupSound->stop();
 powerupSound->play();
-
 }
 
 void Player::die()
@@ -177,26 +187,57 @@ void Player::Up(int distance)
     qreal curPosY= y();
     jumpSound->stop();
     jumpSound->play();
+
+
+    yScrollAnimationUp->setStartValue(yScrollPos->value());
+    int  x=yScrollPos->value() - distance/2;
+    yScrollAnimationUp->setEndValue(x);
+    yScrollAnimationUp->setEasingCurve(QEasingCurve::Linear);
+    yScrollAnimationUp->setDuration(distance);
+
     yAnimationUp->setStartValue(curPosY);
     yAnimationUp->setEndValue(curPosY - distance);
     yAnimationUp->setEasingCurve(QEasingCurve::OutQuint);
     yAnimationUp->setDuration(distance/3*4);
-    yAnimationUp->start();
+
+    playeryAxeScroll->start();
+    //yAnimationUp->start();
     }
 }
 //-------------------------------------------------------------------------------------
 void Player::Down()
 {
-    connect(yAnimationUp,&QPropertyAnimation::finished,[=](){
+    connect(playeryAxeScroll,&QPropertyAnimation::finished,[=](){
         if (y()< groundPosition)
         {
             UpinAir=false;
             AirState=2;
             fall(groundPosition-y(),y(),groundPosition);
+
         }
     });
 }
+void Player::fall(int distance, int startValue, int groundPosition)
+{
+    AirState=2;
+    yScrollAnimationDown->setStartValue(yScrollPos->value());
+    int  x=yScrollPos->value() + abs(distance)/2;
+    yScrollAnimationDown->setEndValue(x);
+    yScrollAnimationDown->setEasingCurve(QEasingCurve::Linear);
+    yScrollAnimationDown->setDuration(abs(distance));
 
+
+    yAnimationDown->setStartValue(startValue);
+    yAnimationDown->setEndValue(groundPosition);
+    yAnimationDown->setEasingCurve(QEasingCurve::Linear);
+    yAnimationDown->setDuration(abs(distance));
+    playeryAxeScrollDown->start();
+    //yAnimationDown->start();
+    connect(playeryAxeScrollDown,&QPropertyAnimation::finished,[=](){
+        frameTimer=80;
+
+    });
+}
 //******************************   --Collision Detection --  ******************************************
 
 bool Player::collideX()
@@ -274,7 +315,7 @@ void Player::setY(qreal y)
     {
         if ((collideY()=="foots") && (marioSize!=-1) && (AirState==2))
         {
-            yAnimationDown->stop();
+            playeryAxeScrollDown->stop();
             m_y=y-10;
             if (AirState!=0)
                 AirState=0;
@@ -285,14 +326,15 @@ void Player::setY(qreal y)
             {
                 if (AirState!=0)
                     AirState=0;
-                qDebug()<<"Head ****";
-                yAnimationUp->stop();
+                qDebug()<<"Head ****";               
+                playeryAxeScroll->stop();
                 setPos(QPoint(0,0)+QPoint(x(),y+20));
                 fall(groundPosition-y+20,y+20,groundPosition);
 
             }
     }
     setPos(QPoint(0,0)+QPoint(x(),m_y));
+
 }
 //-------------------------------------------------------------------------------------
 void Player::setX(qreal x)

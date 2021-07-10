@@ -43,6 +43,7 @@ private:
     void nextFrame();
     QTimer *timer;
     QTimer *walktimer;
+    int Heightsize=50;
     //******************************
 
     //******************************

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include<QParallelAnimationGroup>
+#include <QTimer>
 
 class Briks : public QObject, public QGraphicsPixmapItem
 {
@@ -21,6 +22,7 @@ public:
     qreal y() const;
 
     qreal x() const;
+    void rotate();
 
 public slots:
     void setY(qreal y);
@@ -30,6 +32,9 @@ public slots:
 signals:
 private:
     QGraphicsPixmapItem *brik;
+    QTimer *timer;
+    int angle=0;
+
 
 
 };
