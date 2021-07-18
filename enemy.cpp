@@ -15,6 +15,28 @@ void Enemy::start(int frametime)
     groundState=2;
     fall(2000,y(),500);
 
+    dieTimer = new QTimer();
+
+}
+
+void Enemy::die()
+{
+    height=height/3;
+    helth=0;
+
+    *SpriteImageWalkRight=SpriteImageWalkRightDie->scaled(frameNumber*width, height, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+    *SpriteImageWalkLeft=SpriteImageWalkLeftDie->scaled(frameNumber*width, height, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+     setY(y()+height*2+10);
+     timer->stop();
+     xAnimation->stop();
+
+    connect(dieTimer, &QTimer::timeout, this, [=]{
+
+        DieSound->play();
+        delete this;
+    });
+    dieTimer->start(150);
+
 }
 void Enemy::nextFrame()
 {
@@ -31,13 +53,11 @@ void Enemy::nextFrame()
             currentFrame=width*(frameNumber-1);
     }
     //if (Heightsize<height)
-    {
-    if (Heightsize<80)
-    Heightsize=Heightsize+55;
-    else Heightsize=Heightsize-55;
-    *SpriteImageWalkRight=SpriteImageWalkRight->scaled(1694, Heightsize, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
 
-    }
+
+
+
+
     update(0,0,width,height);
 }
 
@@ -108,6 +128,9 @@ void Enemy::setX(qreal x)
             if (AirState==0)
                 fall(1000-y(),y(),500);
         }
+     else
+      if ((collideX()=="die") &&(helth>0))
+          die();
 }
 
 void Enemy::setY(qreal y)
@@ -161,8 +184,13 @@ QString Enemy::collideX()
         Player * player =dynamic_cast<Player*>(item);
         if (player)
         {
+          if((player->y()+player->playerHeight/2<this->y()) &&(player->helth>0))
+              return "die";
+          else
+          {
           player->die();
           return "plyer";
+          }
         }
 //        }
     }

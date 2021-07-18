@@ -41,6 +41,7 @@ public:
     bool collideX();
 
     bool UpinAir=false;
+    int helth=1;
 
     bool inGround=true;
     qreal y() const;
@@ -50,6 +51,10 @@ public:
    // qreal x() const;
 
     qreal x() const;
+    //*********************************************
+
+        int playerWidth=75;
+        int playerHeight=185;
 
 signals:
 
@@ -81,10 +86,7 @@ private:
     QMediaPlayer *jumpSound;
     QMediaPlayer *powerupSound;
     QMediaPlayer *DieSound;
-//*********************************************
 
-    int playerWidth=75;
-    int playerHeight=185;
 //*********************************************
 
     QPropertyAnimation * xScrollAnimation;

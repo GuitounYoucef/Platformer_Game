@@ -159,7 +159,7 @@ void Player::stopWalking()
  groundState=0;
  frameTimer=80;
 }
-
+//-------------------------------------------------------------------------------------
 void Player::powerup()
 {
 if (marioSize==0){
@@ -168,10 +168,11 @@ if (marioSize==0){
 powerupSound->stop();
 powerupSound->play();
 }
-
+//-------------------------------------------------------------------------------------
 void Player::die()
 {
 marioSize=-1;
+helth=0;
 Up(playerHeight);
 Down();
 backgroundMusic->stop();
@@ -210,7 +211,6 @@ void Player::Down()
     connect(playeryAxeScroll,&QPropertyAnimation::finished,[=](){
         if (y()< groundPosition)
         {
-            UpinAir=false;
             AirState=2;
             fall(groundPosition-y(),y(),groundPosition);
 
@@ -275,7 +275,7 @@ QString Player::collideY()
         {
             qreal t;
             t=this->y();
-            if ((item->y()<t+playerHeight*4/5))
+            if ((item->y()<t))
             {
                 qDebug()<<"Head collide";
                 if (platform->getPlatformType()==3)
@@ -311,6 +311,7 @@ qreal Player::x() const
 void Player::setY(qreal y)
 {
     m_y = y;
+    setPos(x(),m_y);
     if (collideY()!="notcolliding") // colliding
     {
         if ((collideY()=="foots") && (marioSize!=-1) && (AirState==2))
@@ -333,7 +334,7 @@ void Player::setY(qreal y)
 
             }
     }
-    setPos(QPoint(0,0)+QPoint(x(),m_y));
+
 
 }
 //-------------------------------------------------------------------------------------

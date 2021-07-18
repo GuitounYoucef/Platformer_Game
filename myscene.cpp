@@ -74,6 +74,9 @@ void MyScene::addPlatform()
 
 //    platform = new Platform(2,200,-150);
 //    addItem(platform);
+    platform = new Platform(3,-700,150);
+    addItem(platform);
+
     int nextPlatform=-1000;
     for (int i=1; i<=3 ;i++ ) {
     platform = new Platform(1,nextPlatform,300);

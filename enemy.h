@@ -7,6 +7,8 @@
 #include <QPixmap>
 #include <QPainter>
 #include<QDebug>
+#include<QMediaPlayer>
+
 #include"walkers.h"
 #include "platform.h"
 
@@ -23,11 +25,17 @@ public:
     qreal x() const;
     qreal y() const;
     void start(int frametime);
+    void die();
     QPixmap *SpriteImageWalkLeft;
     QPixmap *SpriteImageWalkRight;
+
+    QPixmap *SpriteImageWalkLeftDie;
+    QPixmap *SpriteImageWalkRightDie;
     int xpos,ypos;
     int frameNumber;
     int height, width;
+    QMediaPlayer *DieSound;
+    int helth=1;
 
 
 public slots:
@@ -38,11 +46,11 @@ public slots:
     signals:
 
 private:
-    QPixmap *spriteImageWalkLeft;
-    QPixmap *spriteImageWalkRigh;
+
     void nextFrame();
     QTimer *timer;
     QTimer *walktimer;
+    QTimer *dieTimer;
     int Heightsize=50;
     //******************************
 
