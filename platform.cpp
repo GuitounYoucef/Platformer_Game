@@ -78,7 +78,7 @@ Platform::Platform(int platformType,int x,int y)
         touchedAnimationUp=new QPropertyAnimation(this,"y");
         touchedAnimationDown=new QPropertyAnimation(this,"y");
         break;}
-    case 6:{
+    case 5:{
         Graphicsplateform = new QGraphicsPixmapItem(QPixmap(":/images/metalBlok.png"));
         addToGroup(Graphicsplateform);
         typePlatform=6;

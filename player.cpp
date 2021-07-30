@@ -12,7 +12,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
 {
     currentFrame = 0;
     spriteImageBigMario = new QPixmap(QPixmap(":/images/BigMarioSprite.png"));
-    spriteImageSmallMario = new QPixmap(QPixmap(":/images/marioWalkRight.png"));
+    spriteImageSmallMario = new QPixmap(QPixmap(":/images/mario-sprite-png.png"));
     backgroundAnimation = new QPropertyAnimation(background,"x");
     imageXpos=background->x();
 
@@ -448,32 +448,52 @@ void Player::nextFrameBigMario()
 //-------------------------------------------------------------------------------------
 void Player::nextFrameSmallMario()
 {
+    spriteColumn=1900;
     if (AirState!=0)  // jumping animation
     {
+        spriteColumn=2834/2;
         if (direction==0) // left
             line=2535/2;
         else if (direction==1) // right
             line=2796/2;
+
+        if((frameTimer<playerHeight*7/4) &&(AirState==1) )
+            frameTimer=frameTimer*2;
+        else if (frameTimer>160)
+            frameTimer=frameTimer/2;
     }
     else
+    {
         if (groundState==1)
         {
-
             line=1536/2;
         }
         else if (groundState==2)
         {
             line=1792/2;
         }
-        else if (direction==0)
-            line=0;
-        else line=128;
+        else
+        {
+            if (direction==0)
+                line=0;
+            else line=256/2;
+        }
+    }
     if (frameDirection==1)
-        currentFrame += 128;
-    else currentFrame = currentFrame-256/2;
-    if ((currentFrame >= 4000/2 ) ){
-        currentFrame -= 128;
-        frameDirection=-1;
+        currentFrame += 256/2;
+    else currentFrame -= 256/2;
+    if ((currentFrame >= spriteColumn ) ){
+        if (spriteColumn==1900)
+        {
+            currentFrame =0;
+            frameDirection=+1;
+        }
+        else
+        {
+            currentFrame -= 256/2;
+
+            frameDirection=-1;
+        }
     }
     if (currentFrame <0 )
     {

@@ -23,6 +23,7 @@
 #include "goomba.h"
 #include "koopa.h"
 #include "spiny.h"
+#include"map.h"
 
 
 class MyScene : public QGraphicsScene
@@ -62,6 +63,7 @@ private:
  Goomba *goomba[10];
  Koopa *koopa;
  Spiny *spiny;
+ Map *map;
 
 
  QTimer *timer;

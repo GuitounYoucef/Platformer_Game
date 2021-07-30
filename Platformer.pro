@@ -24,6 +24,7 @@ SOURCES += \
     inanimateobject.cpp \
     koopa.cpp \
     main.cpp \
+    map.cpp \
     mushroom.cpp \
     myscene.cpp \
     pipe.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     goomba.h \
     inanimateobject.h \
     koopa.h \
+    map.h \
     mushroom.h \
     myscene.h \
     pipe.h \
