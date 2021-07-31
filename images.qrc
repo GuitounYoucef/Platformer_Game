@@ -40,5 +40,7 @@
         <file>images/spinyWalkRight.png</file>
         <file>images/spinyWalkLeft.png</file>
         <file>images/metalBlok.png</file>
+        <file>images/halfcastle1.png</file>
+        <file>images/halfcastle2.png</file>
     </qresource>
 </RCC>

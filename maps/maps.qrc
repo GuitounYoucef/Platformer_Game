@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>mario2.txt</file>
+    </qresource>
+</RCC>

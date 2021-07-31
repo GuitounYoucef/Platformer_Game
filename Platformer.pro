@@ -17,6 +17,7 @@ SOURCES += \
     backgroundimage.cpp \
     briks.cpp \
     bullet.cpp \
+    castle.cpp \
     cloud.cpp \
     coin.cpp \
     enemy.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     backgroundimage.h \
     briks.h \
     bullet.h \
+    castle.h \
     cloud.h \
     coin.h \
     enemy.h \
@@ -70,6 +72,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc \
+    maps/maps.qrc \
     sound.qrc
 
 DISTFILES +=

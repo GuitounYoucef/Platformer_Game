@@ -6,6 +6,7 @@
 #include<QDebug>
 #include <QScrollBar>
 #include<QParallelAnimationGroup>
+#include"castle.h"
 
 
 Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,BackgroundImage *background)
@@ -247,7 +248,8 @@ bool Player::collideX()
     {
         InanimateObject * inanimateObject =dynamic_cast<InanimateObject*>(item);
         Coin * coin =dynamic_cast<Coin*>(item);
-        if ((inanimateObject))
+        Castle * caslte =dynamic_cast<Castle*>(item);
+        if ((inanimateObject) && (!caslte))
         {
             qreal t;
             t=this->y();

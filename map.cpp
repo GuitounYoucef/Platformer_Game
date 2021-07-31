@@ -5,6 +5,7 @@
 #include"coin.h"
 #include"pipe.h"
 #include"goomba.h"
+#include"castle.h"
 #include<QDebug>
 
 Map::Map(QObject *parent) : QObject(parent)
@@ -141,9 +142,22 @@ void Map::loadMapFromFile(QGraphicsScene *scene, QString filePath)
                                                 Goomba *goomba= new Goomba(j*64-1500,i*64-1000);
                                                 scene->addItem(goomba);
                                             }
+                                            else
+                                                if (buf=="CS")
+                                                {
+                                                    Castle *castle= new Castle(j*64-1500,i*64-1000,1);
+                                                    scene->addItem(castle);
+                                                    castle= new Castle(j*64-1500,i*64-1000,2);
+                                                    scene->addItem(castle);
+//                                                    castle= new Castle(j*64-1500,i*64-1000,3,2);
+//                                                    scene->addItem(castle);
+                                                   // HalfCastleRight *HalfCastle2 = new HalfCastleRight(j*64-1500,i*64-1000);
+
+//                                                    HalfCastle2->setX(j*64-1500+192);
+//                                                    scene->addItem(HalfCastle2);
 
 
-
+                                                }
                 }
 
             }
