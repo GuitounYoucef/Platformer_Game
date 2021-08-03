@@ -7,6 +7,8 @@
 #include <QScrollBar>
 #include<QParallelAnimationGroup>
 #include"castle.h"
+#include"endstage.h"
+
 
 
 Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,BackgroundImage *background)
@@ -249,6 +251,7 @@ bool Player::collideX()
         InanimateObject * inanimateObject =dynamic_cast<InanimateObject*>(item);
         Coin * coin =dynamic_cast<Coin*>(item);
         Castle * caslte =dynamic_cast<Castle*>(item);
+        EndStage * endStage =dynamic_cast<EndStage*>(item);
         if ((inanimateObject) && (!caslte))
         {
             qreal t;
@@ -262,6 +265,11 @@ bool Player::collideX()
          {
              coin->taken();
          }
+         else
+          if (endStage)
+          {
+              endStage->NextMap();
+          }
 
     }
     return false;

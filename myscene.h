@@ -32,16 +32,22 @@ class MyScene : public QGraphicsScene
     Q_PROPERTY(qreal x READ x WRITE setX)
 
 public:
-    explicit MyScene(QObject *parent = 0);
-    void addPlayer(QGraphicsView *graphicsView);
-    void addPlatform();
+    explicit MyScene(QGraphicsView *graphicsView);
+    void addPlayer(int xpos,int ypos);
+    void addPlatform(int xpos,int ypos,int type);
     void addCloud();
+    void newScene();
+    void newMap(int width,int height,QString fileName);
+    void loadMapFromFile(QString filePath);
+    void removeAllitemes();
 
+    QGraphicsView *ScenegraphicsView;
 
     qreal x() const;
 
 public slots:
     void setX(qreal x);
+
 
 signals:
 
@@ -63,7 +69,7 @@ private:
  Goomba *goomba[10];
  Koopa *koopa;
  Spiny *spiny;
- Map *map;
+
 
 
  QTimer *timer;

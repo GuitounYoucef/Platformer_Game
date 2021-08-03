@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>mario2.txt</file>
+        <file>mario1.txt</file>
     </qresource>
 </RCC>

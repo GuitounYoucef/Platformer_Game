@@ -3,14 +3,18 @@
 #include<QGraphicsView>
 #include<QDebug>
 #include <QScrollBar>
+#include <QtAlgorithms>
+#include"castle.h"
+#include"endstage.h"
 
 
 
 
 
-MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-1000,10000,1400, parent)
+MyScene::MyScene(QGraphicsView *graphicsView)
 
 {
+    ScenegraphicsView=graphicsView;
     pixItem = new QGraphicsPixmapItem(QPixmap(":/images/BackgroundImage.png"));
 //    pixItem->setZValue(-12);
 //    addItem(pixItem);
@@ -32,6 +36,7 @@ MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-1000,10000,1400, parent
     linearGrad.setColorAt(1, Qt::white);
 
      setBackgroundBrush(linearGrad);
+     addPlayer(-400,0);
 
 
 //    ScrollAnimation = new QPropertyAnimation(yPos,"value");
@@ -47,41 +52,18 @@ MyScene::MyScene(QObject *parent) : QGraphicsScene(-950,-1000,10000,1400, parent
 
 }
 
-void MyScene::addPlayer(QGraphicsView *graphicsView)
+void MyScene::addPlayer(int xpos,int ypos)
 {
-    player = new Player(graphicsView,this,background);
-    player->setX(-400);
-    player->setY(100);
-
-    pixItem->setPos(-pixItem->boundingRect().width()/2,-pixItem->boundingRect().height()/2);
-
-
+    player = new Player(ScenegraphicsView,this,background);
+    player->setX(xpos);
+    player->setY(ypos);
     addItem(player);
-
-
-
-
-
-
 }
 
-void MyScene::addPlatform()
+void MyScene::addPlatform(int xpos,int ypos,int type)
 {
-//    platform = new Platform();
-//    platform->setPos(100,-160);
-//    addItem(platform);
-
-
-//    platform = new Platform(2,200,-150);
-//    addItem(platform);
-    map =new Map();
-    //map->openMap("C:/Users/guitoun/Documents/Platformer_Game/maps/stage1.txt");
-    //map->newMap(200,25,"C:/Users/guitoun/Documents/Platformer_Game/maps/mario2.txt");
-    map->loadMapFromFile(this,"C:/Users/guitoun/Documents/Platformer_Game/maps/mario2.txt");
-
-
-
-
+    Platform *platform = new Platform(type,xpos,ypos);
+    addItem(platform);
 }
 
 void MyScene::addCloud()
@@ -97,6 +79,11 @@ void MyScene::addCloud()
     }
 
 
+}
+
+void MyScene::newScene()
+{
+loadMapFromFile(":/mario1.txt");
 }
 
 qreal MyScene::x() const
@@ -154,4 +141,146 @@ void MyScene::keyReleaseEvent(QKeyEvent *event)
        break;
       }
     }
+}
+void MyScene::newMap(int width, int height, QString fileName)
+{
+    QFile mapFile(fileName);
+    if(mapFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&mapFile);
+        out<<width<<" ";
+        out<<height<<" "<<"\n";
+        for(int i=1; i<=height; i++)
+        {
+            for(int j=1; j<=width; j++)
+            out<<"00 ";
+            out<<"\n";
+        }
+
+    }
+    mapFile.close();
+}
+
+void MyScene::loadMapFromFile(QString filePath)
+{
+   //qDeleteAll(items());
+    QFile file_read(filePath);
+
+    if(file_read.open(QIODevice::ReadOnly))
+    {
+
+        QTextStream stream(&file_read);
+        while(!file_read.atEnd())
+        {
+            QString buf;
+            QStringList list = stream.readAll().split(" ");
+            QListIterator<QString> li(list);
+
+            int width=li.next().toInt();
+            int height=li.next().toInt();
+            //ScenegraphicsView->setGeometry(-1000,-1000,width*64,height*64);
+            QString nextmapPath=li.next();
+            QString backgroundPath=li.next();
+            background->setImageFile(backgroundPath);
+            qDebug()<<width<<height;
+
+            for (int i=1;i<=height ;i++ ) {
+                for (int j=1;j<=width ;j++ ) {
+                    buf=li.next();
+                    if (buf=="PL")
+                    {
+                        player->setX(j*64-1500);
+                        player->setY(i*64-1000);
+                       // player->setPos(j*64-1500,i*64-1000);
+                    }
+                    else
+                    if (buf=="P1")
+                    {
+                        Platform *platform = new Platform(1,j*64-1500,i*64-1000);
+                        addItem(platform);
+                    }
+                    else
+                        if (buf=="P3")
+                        {
+                            Platform *platform = new Platform(3,j*64-1500,i*64-1000);
+                            addItem(platform);
+                        }
+                        else
+                            if (buf=="P4")
+                            {
+                                Platform *platform = new Platform(4,j*64-1500,i*64-1000);
+                                addItem(platform);
+                            }
+                            else
+                                if (buf=="CO")
+                                {
+                                    Coin *coin = new Coin(j*64-1500,i*64-1000);
+                                    addItem(coin);
+                                }
+                                else
+                                    if (buf=="p2")
+                                    {
+                                        Pipe *pipe = new Pipe(2);
+                                        pipe->setPos(j*64-1500,i*64-1150);
+                                        addItem(pipe);
+                                    }
+                                    else
+                                        if (buf=="P5")
+                                        {
+                                            Platform *platform = new Platform(5,j*64-1500,i*64-1000);
+                                            addItem(platform);
+                                        }
+                                        else
+                                            if (buf=="GM")
+                                            {
+                                                Goomba *goomba= new Goomba(j*64-1500,i*64-1000);
+                                                addItem(goomba);
+
+                                            }
+                                            else
+                                                if (buf=="CS")
+                                                {
+                                                    Castle *castle= new Castle(j*64-1500,i*64-1000,1);
+                                                    addItem(castle);
+//                                                    castle= new Castle(j*64-1500,i*64-1000,2);
+//                                                    addItem(castle);
+                                                }
+                                                else
+                                                    if (buf=="EN")
+                                                    {
+                                                        EndStage *endStage= new EndStage(j*64-1500,i*64-1000,nextmapPath,this);
+                                                        addItem(endStage);
+                                                    }
+
+
+                }
+
+            }
+        }
+    }
+
+}
+
+void MyScene::removeAllitemes()
+{
+    QList<QGraphicsItem*> L = items();
+    foreach(QGraphicsItem * item,L)
+    {
+        InanimateObject * inanimateObject =dynamic_cast<InanimateObject*>(item);
+        if (inanimateObject){
+               removeItem(item);
+               // delete item;
+          }
+        QGraphicsPixmapItem * obj =dynamic_cast<QGraphicsPixmapItem*>(item);
+        if ((obj)&&(obj!=background) &&(obj!=player)){
+               removeItem(item);
+               // delete item;
+          }
+//        Walkers * walkers =dynamic_cast<Walkers*>(item);
+//        if ((walkers) &&(walkers!=player)){
+//               removeItem(item);
+//               // delete item;
+//          }
+
+         }
 }

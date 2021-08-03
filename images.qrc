@@ -42,5 +42,7 @@
         <file>images/metalBlok.png</file>
         <file>images/halfcastle1.png</file>
         <file>images/halfcastle2.png</file>
+        <file>images/metalBlokEndStage.png</file>
+        <file>images/stage2Background.jpg</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@ class BackgroundImage : public QObject,  public QGraphicsPixmapItem
 
 public:
     explicit BackgroundImage(QObject *parent = nullptr);
+    void setImageFile(QString filePath);
 
     qreal x() const;
 

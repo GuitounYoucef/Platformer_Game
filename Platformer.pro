@@ -20,12 +20,12 @@ SOURCES += \
     castle.cpp \
     cloud.cpp \
     coin.cpp \
+    endstage.cpp \
     enemy.cpp \
     goomba.cpp \
     inanimateobject.cpp \
     koopa.cpp \
     main.cpp \
-    map.cpp \
     mushroom.cpp \
     myscene.cpp \
     pipe.cpp \
@@ -45,11 +45,11 @@ HEADERS += \
     castle.h \
     cloud.h \
     coin.h \
+    endstage.h \
     enemy.h \
     goomba.h \
     inanimateobject.h \
     koopa.h \
-    map.h \
     mushroom.h \
     myscene.h \
     pipe.h \

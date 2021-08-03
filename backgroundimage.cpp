@@ -2,8 +2,14 @@
 
 BackgroundImage::BackgroundImage(QObject *parent) : QObject(parent)
 {
-setPixmap(QPixmap(":/images/BackgroundImage.png"));
+
+setImageFile(":/images/BackgroundImage.png");
 setZValue(-12);
+}
+
+void BackgroundImage::setImageFile(QString filePath)
+{
+setPixmap(QPixmap(filePath));
 }
 
 qreal BackgroundImage::x() const
