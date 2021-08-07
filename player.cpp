@@ -13,12 +13,14 @@
 
 Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,BackgroundImage *background)
 {
+    QGraphicsLineItem *line1=new QGraphicsLineItem;
+    line1->setLine(x(),y(),x()+100,y());
     currentFrame = 0;
     spriteImageBigMario = new QPixmap(QPixmap(":/images/BigMarioSprite.png"));
     spriteImageSmallMario = new QPixmap(QPixmap(":/images/mario-sprite-png.png"));
     backgroundAnimation = new QPropertyAnimation(background,"x");
     imageXpos=background->x();
-
+    backgroundimage=background;
     line=200;
     timerSmallMario = new QTimer();
     timerBigMario = new QTimer();
@@ -35,7 +37,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     xScrollPos=graphicsView->horizontalScrollBar();
     yScrollPos=graphicsView->verticalScrollBar();
 
-    xScrollPos->setValue(-950);
+    xScrollPos->setValue(x()-950);
     xScrollAnimation = new QPropertyAnimation(xScrollPos,"value");
     yScrollAnimationUp = new QPropertyAnimation(yScrollPos,"value");
     yScrollAnimationDown= new QPropertyAnimation(yScrollPos,"value");
@@ -117,7 +119,7 @@ void Player::walk(int dirc,BackgroundImage *background)
         xAnimation->setEndValue(x()+step);
         xScrollAnimation->setEndValue(xScrollPos->value()+step);
         if(background->pixmap().width()+background->x()<scene()->width()-600)
-            backgroundAnimation->setEndValue(background->x()+step-200);
+            backgroundAnimation->setEndValue(background->x()+step-100);
         else
             backgroundAnimation->setEndValue(background->x());
     }
@@ -127,7 +129,7 @@ void Player::walk(int dirc,BackgroundImage *background)
         xAnimation->setEndValue(x()-step);
         xScrollAnimation->setEndValue(xScrollPos->value()-step);
         if(background->x()>-950)
-            backgroundAnimation->setEndValue(background->x()-step+200);
+            backgroundAnimation->setEndValue(background->x()-step+100);
         else
             backgroundAnimation->setEndValue(background->x());
     }
@@ -138,7 +140,8 @@ void Player::walk(int dirc,BackgroundImage *background)
     xScrollAnimation->setDuration(duration);
     backgroundAnimation->setDuration(duration);
     if  (( ( x()-950 >(xScrollPos->value()+viewWidth/12) && (direction==0)  )
-                          || (( (x()-950 <(xScrollPos->value()-viewWidth/12) ) && (direction==1)))))
+                          || (( (background->x() >=(x()-2000)  ) && (direction==1)))))
+                            //direction :0=left  1=right
     {
         playerScroll->start();
         connect(playerScroll,&QPropertyAnimation::finished,[=](){
@@ -268,7 +271,9 @@ bool Player::collideX()
          else
           if (endStage)
           {
+              stopWalking();
               endStage->NextMap();
+
           }
 
     }
@@ -298,7 +303,8 @@ QString Player::collideY()
             else
                 if ((item->y()>t))
                 {
-                    qDebug()<<"foots";
+                    //qDebug()<<"foots";
+                    playeryAxeScrollDown->stop();
                     return "foots";
                 }
         }
@@ -365,6 +371,11 @@ void Player::setX(qreal x)
             if (AirState==0)
                 fall(groundPosition-y(),y(),groundPosition);
         }
+    if ((xScrollPos->value()>m_x-950) )
+    xScrollPos->setValue(m_x-950);
+
+
+
     setPos(QPoint(0,0)+QPoint(m_x,y()));
 }
 

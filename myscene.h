@@ -3,7 +3,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsItemGroup>
-#include <QPropertyAnimation>
+
 #include <QTimer>
 #include <QObject>
 #include<QKeyEvent>
@@ -26,10 +26,11 @@
 #include"map.h"
 
 
+
 class MyScene : public QGraphicsScene
 {
     Q_OBJECT
-    Q_PROPERTY(qreal x READ x WRITE setX)
+
 
 public:
     explicit MyScene(QGraphicsView *graphicsView);

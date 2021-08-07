@@ -1,9 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/mario-sprite-png.png</file>
-        <file>images/platforme.png</file>
-        <file>images/SeekPng.png</file>
-        <file>images/bluemoon.png</file>
         <file>images/BigMarioSprite.png</file>
         <file>images/big-cloud.png</file>
         <file>images/BackgroundImage.png</file>
@@ -11,7 +8,6 @@
         <file>images/semiBrick.png</file>
         <file>images/oneBrick.png</file>
         <file>images/Bricks.png</file>
-        <file>images/AirPlateform.png</file>
         <file>images/tree1.png</file>
         <file>images/tree4.png</file>
         <file>images/tree3.png</file>
@@ -19,19 +15,14 @@
         <file>images/tree5.png</file>
         <file>images/tree6.png</file>
         <file>images/coin.png</file>
-        <file>images/tree7.png</file>
-        <file>images/tree8.png</file>
         <file>images/questbox.png</file>
         <file>images/mushroom4.png</file>
         <file>images/mushroom5.png</file>
         <file>images/mushroom3.png</file>
         <file>images/mushroom2.png</file>
         <file>images/mushroom1.png</file>
-        <file>images/piranha.png</file>
         <file>images/piranha2.png</file>
         <file>images/pipe.png</file>
-        <file>images/mario.png</file>
-        <file>images/BigMarioWalkRight.png</file>
         <file>images/goomba.png</file>
         <file>images/goombaWalkRight.png</file>
         <file>images/goombaWalkLeft.png</file>
@@ -43,6 +34,7 @@
         <file>images/halfcastle1.png</file>
         <file>images/halfcastle2.png</file>
         <file>images/metalBlokEndStage.png</file>
-        <file>images/stage2Background.jpg</file>
+        <file>images/stage3Background.png</file>
+        <file>images/water.png</file>
     </qresource>
 </RCC>

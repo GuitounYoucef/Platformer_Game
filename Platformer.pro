@@ -1,5 +1,7 @@
 QT       += core gui
 QT += multimedia multimediawidgets
+QT += qml quick
+
 
 
 
@@ -25,6 +27,7 @@ SOURCES += \
     goomba.cpp \
     inanimateobject.cpp \
     koopa.cpp \
+    lake.cpp \
     main.cpp \
     mushroom.cpp \
     myscene.cpp \
@@ -36,6 +39,7 @@ SOURCES += \
     spiny.cpp \
     tree.cpp \
     walkers.cpp \
+    water.cpp \
     widget.cpp
 
 HEADERS += \
@@ -50,6 +54,7 @@ HEADERS += \
     goomba.h \
     inanimateobject.h \
     koopa.h \
+    lake.h \
     mushroom.h \
     myscene.h \
     pipe.h \
@@ -60,6 +65,7 @@ HEADERS += \
     spiny.h \
     tree.h \
     walkers.h \
+    water.h \
     widget.h
 
 FORMS += \
@@ -71,8 +77,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
+    QML.qrc \
     images.qrc \
     maps/maps.qrc \
     sound.qrc
 
-DISTFILES +=
+DISTFILES += \
+    QML/water.qml

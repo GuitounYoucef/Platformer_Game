@@ -4,8 +4,17 @@
 #include<QDebug>
 #include <QScrollBar>
 #include <QtAlgorithms>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlComponent>
+#include <QtQuick/QQuickView>
+
+#include <QQmlApplicationEngine>
+
+
 #include"castle.h"
 #include"endstage.h"
+#include"water.h"
+#include "lake.h"
 
 
 
@@ -15,6 +24,10 @@ MyScene::MyScene(QGraphicsView *graphicsView)
 
 {
     ScenegraphicsView=graphicsView;
+
+
+
+
     pixItem = new QGraphicsPixmapItem(QPixmap(":/images/BackgroundImage.png"));
 //    pixItem->setZValue(-12);
 //    addItem(pixItem);
@@ -79,11 +92,15 @@ void MyScene::addCloud()
     }
 
 
+
+
+
 }
 
 void MyScene::newScene()
 {
 loadMapFromFile(":/mario1.txt");
+
 }
 
 qreal MyScene::x() const
@@ -120,7 +137,8 @@ void MyScene::keyPressEvent(QKeyEvent *event)
      player->setMarioSize(1);
      break;
     case Qt::Key_Control :
-     player->setMarioSize(0);
+     //player->setMarioSize(0);
+        player->setX(0);
      break;
 
     }
@@ -164,6 +182,13 @@ void MyScene::newMap(int width, int height, QString fileName)
 void MyScene::loadMapFromFile(QString filePath)
 {
    //qDeleteAll(items());
+    //addItem(player);
+
+    player->setX(0);
+    player->setY(0);
+
+
+
     QFile file_read(filePath);
 
     if(file_read.open(QIODevice::ReadOnly))
@@ -178,10 +203,13 @@ void MyScene::loadMapFromFile(QString filePath)
 
             int width=li.next().toInt();
             int height=li.next().toInt();
-            //ScenegraphicsView->setGeometry(-1000,-1000,width*64,height*64);
+
+            setSceneRect(-900,-900,width*64,height*64);
             QString nextmapPath=li.next();
             QString backgroundPath=li.next();
             background->setImageFile(backgroundPath);
+            background->setPos(-950,-600);
+            background->setX(-950);
             qDebug()<<width<<height;
 
             for (int i=1;i<=height ;i++ ) {
@@ -189,8 +217,8 @@ void MyScene::loadMapFromFile(QString filePath)
                     buf=li.next();
                     if (buf=="PL")
                     {
-                        player->setX(j*64-1500);
-                        player->setY(i*64-1000);
+
+
                        // player->setPos(j*64-1500,i*64-1000);
                     }
                     else
@@ -242,8 +270,8 @@ void MyScene::loadMapFromFile(QString filePath)
                                                 {
                                                     Castle *castle= new Castle(j*64-1500,i*64-1000,1);
                                                     addItem(castle);
-//                                                    castle= new Castle(j*64-1500,i*64-1000,2);
-//                                                    addItem(castle);
+                                                    castle= new Castle(j*64-1500,i*64-1000,2);
+                                                    addItem(castle);
                                                 }
                                                 else
                                                     if (buf=="EN")
@@ -251,6 +279,12 @@ void MyScene::loadMapFromFile(QString filePath)
                                                         EndStage *endStage= new EndStage(j*64-1500,i*64-1000,nextmapPath,this);
                                                         addItem(endStage);
                                                     }
+                                                    else
+                                                        if (buf=="WT")
+                                                        {
+                                                            Lake *water= new Lake(j*64-1500,i*64-1000+30,200);
+                                                            addItem(water);
+                                                        }
 
 
                 }
@@ -259,10 +293,13 @@ void MyScene::loadMapFromFile(QString filePath)
         }
     }
 
+
+
 }
 
 void MyScene::removeAllitemes()
 {
+
     QList<QGraphicsItem*> L = items();
     foreach(QGraphicsItem * item,L)
     {
@@ -277,9 +314,9 @@ void MyScene::removeAllitemes()
                // delete item;
           }
 //        Walkers * walkers =dynamic_cast<Walkers*>(item);
-//        if ((walkers) &&(walkers!=player)){
+//        if ((walkers)){
 //               removeItem(item);
-//               // delete item;
+
 //          }
 
          }

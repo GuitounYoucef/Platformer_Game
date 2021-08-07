@@ -42,6 +42,7 @@ public:
 
     bool UpinAir=false;
     int helth=1;
+    BackgroundImage *backgroundimage;
 
     bool inGround=true;
     qreal y() const;
@@ -94,6 +95,7 @@ private:
     QPropertyAnimation * yScrollAnimationDown;
     QPropertyAnimation * backgroundAnimation;
     qreal imageXpos;
+
 
     qreal groundPosition;
     QPixmap * pixItem;

@@ -108,14 +108,15 @@ void Platform::destroyPlatform()
     {
     collapseSound->play();
     connect(firstToutchtimer, &QTimer::timeout, this,[=](){
-      Graphicsplateform->setVisible(false);
+
+      scene()->removeItem(Graphicsplateform);
       typePlatform=-1;
-      removeFromGroup(Graphicsplateform);
+
      for(int i=0;i<15;i++)
-       addToGroup(briksArray[i]);
+     addToGroup(briksArray[i]);
      BrikAnimation->start();
      firstToutchtimer->stop();
-      // addToGroup(Graphicsplateform);
+
       connect(BrikAnimation, &QParallelAnimationGroup::finished, this,[=](){
           delete this;
       });
