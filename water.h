@@ -5,33 +5,31 @@
 #include <QGraphicsPixmapItem>
 #include<QPropertyAnimation>
 #include<QTimer>
+#include <QPainter>
 
 class Water : public QObject,public QGraphicsPixmapItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal x READ x WRITE setX)
+
 public:
     explicit Water(int xpos,int ypos);
 
 
-    qreal x() const
-    {
-        return m_x;
-    }
 
-public slots:
 
-    void setX(qreal x);
+
+
 private:
 
-    QPixmap *waterImage;
+    QPixmap *spriteImageWater;
+    int currentFrame, line;
+    void nextFrame();
     QTimer *timer;
-    QPropertyAnimation *xAnimation;
-    bool right=true;
-    int length;
 
 
-    qreal m_x;
+    QPainterPath shape() const Q_DECL_OVERRIDE;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
 };
 
 #endif // WATER_H

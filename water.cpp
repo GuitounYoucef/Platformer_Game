@@ -3,48 +3,41 @@
 
 Water::Water(int xpos,int ypos)
 {
-
-    setPixmap(QPixmap(":/images/water.png"));
-   setOpacity(0.95);
+    currentFrame = 0;
+    spriteImageWater= new QPixmap(QPixmap(":/images/water2.png"));
     timer = new QTimer();
-    setPos(xpos,ypos);
-    length= (QRandomGenerator::global()->generate()) %20;
-    if (length%2==0)
-    right=true;
-    else right=false;
-    xAnimation= new QPropertyAnimation(this,"x",this);
-    xAnimation->setStartValue(xpos);
-    xAnimation->setEndValue(xpos-length);
-    xAnimation->setDuration(3000);
-    xAnimation->start();
-    connect(xAnimation,&QPropertyAnimation::finished,[=](){
-      if (right)
-      {
-          xAnimation->setStartValue(xpos-length);
-          xAnimation->setEndValue(xpos);
-          xAnimation->setEasingCurve(QEasingCurve::Linear);
-          right=false;
-
-      }
-      else
-      {
-          xAnimation->setStartValue(xpos);
-          xAnimation->setEndValue(xpos-length);
-          xAnimation->setEasingCurve(QEasingCurve::Linear);
-          right=true;
-      }
-
-
-      xAnimation->start();
-    });
-
+    connect(timer, &QTimer::timeout, this, &Water::nextFrame);
+      timer->start(80);
+      setPos(xpos,ypos);
 
 }
 
-void Water::setX(qreal x)
+
+
+void Water::nextFrame()
 {
-    m_x = x;
-    setPos(m_x,y());
+
+currentFrame=currentFrame+2;
+if (currentFrame>=64)
+    currentFrame=0;
+ update(0,0,128, 114);
 }
 
+QPainterPath Water::shape() const
+{
+    QPainterPath path;
+    path.addRect(0, 0, 128, 114);
+    return path;
+}
 
+void Water::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->drawPixmap(0,0, *spriteImageWater, currentFrame, 0, 128, 114);
+}
+
+QRectF Water::boundingRect() const
+{
+    return QRectF(0,0,128, 114);
+}

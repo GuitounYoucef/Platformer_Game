@@ -18,6 +18,7 @@ Castle::Castle(int xpos,int ypos,int part)
         QGraphicsPixmapItem *HalfCastle1 = new QGraphicsPixmapItem(QPixmap(":/images/halfcastle2.png"));
         HalfCastle1->setX(xpos+209);
         HalfCastle1->setY(ypos-360);
+        //setOpacity(0.5);
         setZValue(10);
         addToGroup(HalfCastle1);
         break;
