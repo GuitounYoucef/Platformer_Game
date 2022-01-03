@@ -1,7 +1,7 @@
 #include "tree.h"
 #include<QRandomGenerator>
 
-Tree::Tree(int xpos)
+Tree::Tree(int xpos,int ypos)
 {
 int x = (QRandomGenerator::global()->generate()) %6;
 
@@ -32,8 +32,9 @@ case 7: {
     break;}
 }
 
-x = (QRandomGenerator::global()->generate()) %xpos;
-setPos(x,300-pixmap().height());
+setX(xpos);
+setY(ypos-pixmap().height()+50);
+
 
 setZValue(-7);
 }

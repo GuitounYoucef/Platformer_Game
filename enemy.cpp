@@ -88,8 +88,8 @@ void Enemy::walk()
     xAnimation->stop();
     xAnimation->setStartValue(x());
     if (groundState==1)
-        xAnimation->setEndValue(x()+600);
-    else xAnimation->setEndValue(x()-600);
+        xAnimation->setEndValue(x()+400);
+    else xAnimation->setEndValue(x()-400);
     xAnimation->setDuration(6000);
     //xAnimation->setEasingCurve(QEasingCurve::OutSine);
     xAnimation->setEasingCurve(QEasingCurve::Linear);
@@ -144,7 +144,7 @@ void Enemy::setY(qreal y)
         {
             stopFalling();
             walk();
-            m_y=y-10;
+            //m_y=y-20;
             if (AirState!=0)
                 AirState=0;
         }
@@ -171,16 +171,12 @@ QString Enemy::collideY()
 
 QString Enemy::collideX()
 {
+    qreal t;
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
     foreach(QGraphicsItem * item,collidingItems)
     {
-//        Platform * platform =dynamic_cast<Platform*>(item);
-//        if (platform)
-//        {
-//           return "platform";
-//         }
-//        else
-//        {
+
+
         Player * player =dynamic_cast<Player*>(item);
         if (player)
         {

@@ -6,8 +6,12 @@
 #include<QDebug>
 #include <QScrollBar>
 #include<QParallelAnimationGroup>
+#include<QEventLoop>
+
+
 #include"castle.h"
 #include"endstage.h"
+#include "lake.h"
 
 
 
@@ -15,6 +19,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
 {
     QGraphicsLineItem *line1=new QGraphicsLineItem;
     line1->setLine(x(),y(),x()+100,y());
+
     currentFrame = 0;
     spriteImageBigMario = new QPixmap(QPixmap(":/images/BigMarioSprite.png"));
     spriteImageSmallMario = new QPixmap(QPixmap(":/images/mario-sprite-png.png"));
@@ -68,7 +73,7 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     backgroundMusic=new QMediaPlayer();
     backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
     backgroundMusic->setVolume(50);
-   // backgroundMusic->play();
+    backgroundMusic->play();
 
 }
 
@@ -93,7 +98,7 @@ void Player::addBullet()
 //-------------------------------------------------------------------------------------
 void Player::walk(int dirc,BackgroundImage *background)
 {
-    frameTimer=35;
+    frameTimer=80;
     direction=dirc;
     int step;
     int duration;
@@ -163,7 +168,7 @@ void Player::stopWalking()
  playerScroll->stop();
  xAnimation->stop();
  groundState=0;
- frameTimer=80;
+ frameTimer=200;
 }
 //-------------------------------------------------------------------------------------
 void Player::powerup()
@@ -177,12 +182,15 @@ powerupSound->play();
 //-------------------------------------------------------------------------------------
 void Player::die()
 {
-marioSize=-1;
 helth=0;
-Up(playerHeight);
-Down();
-backgroundMusic->stop();
 DieSound->play();
+stopWalking();
+stopFalling();
+setY(-500);
+backgroundMusic->stop();
+
+
+emit RetCheckPoint();
 }
 //-------------------------------------------------------------------------------------
 void Player::Up(int distance)
@@ -255,6 +263,7 @@ bool Player::collideX()
         Coin * coin =dynamic_cast<Coin*>(item);
         Castle * caslte =dynamic_cast<Castle*>(item);
         EndStage * endStage =dynamic_cast<EndStage*>(item);
+
         if ((inanimateObject) && (!caslte))
         {
             qreal t;
@@ -273,7 +282,6 @@ bool Player::collideX()
           {
               stopWalking();
               endStage->NextMap();
-
           }
 
     }
@@ -286,6 +294,7 @@ QString Player::collideY()
     foreach(QGraphicsItem * item,collidingItems)
     {
         Platform * platform =dynamic_cast<Platform*>(item);
+        Lake *lake=dynamic_cast<Lake*>(item);
         if (platform)
         {
             qreal t;
@@ -305,9 +314,16 @@ QString Player::collideY()
                 {
                     //qDebug()<<"foots";
                     playeryAxeScrollDown->stop();
+
                     return "foots";
                 }
+
         }
+        else
+         if ((lake) &&(helth>0) &&(lake->y()<y()-280))
+         {
+             die();
+         }
     }
     return "notcolliding";
 }
@@ -469,14 +485,14 @@ void Player::nextFrameBigMario()
 //-------------------------------------------------------------------------------------
 void Player::nextFrameSmallMario()
 {
-    spriteColumn=1900;
+    spriteColumn=3800;
     if (AirState!=0)  // jumping animation
     {
-        spriteColumn=2834/2;
+        spriteColumn=2834;
         if (direction==0) // left
-            line=2535/2;
+            line=2535;
         else if (direction==1) // right
-            line=2796/2;
+            line=2796;
 
         if((frameTimer<playerHeight*7/4) &&(AirState==1) )
             frameTimer=frameTimer*2;
@@ -487,31 +503,31 @@ void Player::nextFrameSmallMario()
     {
         if (groundState==1)
         {
-            line=1536/2;
+            line=1536;
         }
         else if (groundState==2)
         {
-            line=1792/2;
+            line=1792;
         }
         else
         {
             if (direction==0)
                 line=0;
-            else line=256/2;
+            else line=256;
         }
     }
     if (frameDirection==1)
-        currentFrame += 256/2;
-    else currentFrame -= 256/2;
+        currentFrame += 256;
+    else currentFrame -= 256;
     if ((currentFrame >= spriteColumn ) ){
-        if (spriteColumn==1900)
+        if (spriteColumn==3800)
         {
             currentFrame =0;
             frameDirection=+1;
         }
         else
         {
-            currentFrame -= 256/2;
+            currentFrame -= 256;
 
             frameDirection=-1;
         }
@@ -521,9 +537,10 @@ void Player::nextFrameSmallMario()
         currentFrame =0;
         frameDirection=1;
     }
-    timerSmallMario->stop();
-    timerSmallMario->start(frameTimer);
-    update(0,0,128,128);
+    timerBigMario->stop();
+    timerBigMario->start(frameTimer);
+
+    update(0,0,256,256);
 }
 
 //*******************************************************************************************
@@ -533,7 +550,7 @@ void Player::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     Q_UNUSED(option);
     Q_UNUSED(widget);
     if (marioSize==0)
-    painter->drawPixmap(0,0, *spriteImageSmallMario, currentFrame, line, 90,100);
+    painter->drawPixmap(0,0, *spriteImageSmallMario, currentFrame, line, 128,100);
     else
      painter->drawPixmap(0,0, *spriteImageBigMario, currentFrame, line, 180,200);
 }

@@ -18,8 +18,17 @@ QString EndStage::getNextmapPath()
     return nextmapFileLink;
 }
 
+
+
 void EndStage::NextMap()
 {
    myscene->removeAllitemes();
    myscene->loadMapFromFile(getNextmapPath());
+}
+
+
+void EndStage::ReturnToCheckPoint(QString mapPath)
+{
+        myscene->removeAllitemes();
+        myscene->loadMapFromFile(mapPath);
 }

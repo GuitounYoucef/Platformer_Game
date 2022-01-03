@@ -8,7 +8,7 @@ class Tree : public QObject,  public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    explicit Tree(int xpos);
+    explicit Tree(int xpos,int ypos);
 
 signals:
 

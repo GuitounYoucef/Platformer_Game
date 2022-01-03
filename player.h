@@ -11,10 +11,13 @@
 #include <QPixmap>
 #include <QPainter>
 #include<QMediaPlayer>
+#include<QThread>
 
 #include"bullet.h"
 #include"backgroundimage.h"
 #include"walkers.h"
+
+
 
 class QScrollBar;
 
@@ -33,7 +36,7 @@ public:
     void fall(int distance, int startValue, int groundPosition);
     void stopWalking();
     void powerup();
-    void die();
+
 
     void Up(int distance);
     void Down();
@@ -50,18 +53,20 @@ public:
     void setMarioSize(int size);  //0:small    1:big
 
    // qreal x() const;
-
+    void die();
     qreal x() const;
     //*********************************************
 
         int playerWidth=75;
         int playerHeight=185;
+    QMediaPlayer *backgroundMusic;
 
 signals:
-
+    void RetCheckPoint();
 
 public slots:
     void setY(qreal y);
+
 
 
 
@@ -75,6 +80,7 @@ public slots:
 
 
 private:
+
      QScrollBar *scroll;
      QScrollBar *xScrollPos;
      QScrollBar *yScrollPos;
@@ -83,10 +89,11 @@ private:
      QParallelAnimationGroup *playeryAxeScrollDown;
      int viewWidth;
 
-    QMediaPlayer *backgroundMusic;
+
     QMediaPlayer *jumpSound;
     QMediaPlayer *powerupSound;
     QMediaPlayer *DieSound;
+    QTimer *dieTimer;
 
 //*********************************************
 

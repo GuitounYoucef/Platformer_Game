@@ -9,12 +9,13 @@
 #include <QtQuick/QQuickView>
 
 #include <QQmlApplicationEngine>
-
+#include<QThread>
 
 #include"castle.h"
 #include"endstage.h"
 #include"water.h"
 #include "lake.h"
+#include "tree.h"
 
 
 
@@ -49,7 +50,7 @@ MyScene::MyScene(QGraphicsView *graphicsView)
     linearGrad.setColorAt(1, Qt::white);
 
      setBackgroundBrush(linearGrad);
-     addPlayer(-400,0);
+     addPlayer(-400,-400);
 
 
 //    ScrollAnimation = new QPropertyAnimation(yPos,"value");
@@ -70,7 +71,16 @@ void MyScene::addPlayer(int xpos,int ypos)
     player = new Player(ScenegraphicsView,this,background);
     player->setX(xpos);
     player->setY(ypos);
+
     addItem(player);
+    checkPointtimer= new QTimer();
+    connect(player,&Player::RetCheckPoint,[=](){
+
+        ReturnToCheckPoint();
+
+
+
+    });
 }
 
 void MyScene::addPlatform(int xpos,int ypos,int type)
@@ -99,7 +109,7 @@ void MyScene::addCloud()
 
 void MyScene::newScene()
 {
-loadMapFromFile(":/mario1.txt");
+loadMapFromFile(mapPath);
 
 }
 
@@ -124,10 +134,14 @@ void MyScene::keyPressEvent(QKeyEvent *event)
        case Qt::Key_Right :
     {
           player->walk(0,background);
+          if (player->backgroundMusic->PausedState){
+              player->backgroundMusic->play();
+          }
           break;}
       case Qt::Key_Left :
     {
        player->walk(1,background);
+
        break;
     }
     case Qt::Key_Up :
@@ -183,9 +197,8 @@ void MyScene::loadMapFromFile(QString filePath)
 {
    //qDeleteAll(items());
     //addItem(player);
+    mapPath=filePath;
 
-    player->setX(0);
-    player->setY(0);
 
 
 
@@ -285,6 +298,20 @@ void MyScene::loadMapFromFile(QString filePath)
                                                             Lake *water= new Lake(j*64-1500,i*64-1000+30,200);
                                                             addItem(water);
                                                         }
+                                                        else
+                                                            if (buf=="TR")
+                                                            {
+                                                                Tree *tree= new Tree(j*64-1500,i*64-1000+30);
+                                                                addItem(tree);
+                                                            }
+                                                            else
+                                                                if (buf=="CL")
+                                                                {
+                                                                    Cloud *cloud= new Cloud(j*64-1500,i*64-1000+30);
+                                                                    addItem(cloud);
+                                                                }
+
+
 
 
                 }
@@ -293,6 +320,11 @@ void MyScene::loadMapFromFile(QString filePath)
         }
     }
 
+   player->setX(0);
+   player->setY(0);
+
+
+    player->helth=1;
 
 
 }
@@ -313,11 +345,13 @@ void MyScene::removeAllitemes()
                removeItem(item);
                // delete item;
           }
-//        Walkers * walkers =dynamic_cast<Walkers*>(item);
-//        if ((walkers)){
-//               removeItem(item);
 
-//          }
 
-         }
+    }
+}
+
+void MyScene::ReturnToCheckPoint()
+{
+    removeAllitemes();
+    loadMapFromFile(mapPath);
 }

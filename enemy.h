@@ -13,6 +13,7 @@
 #include "platform.h"
 
 
+
 class Enemy :public Walkers
 {
     Q_OBJECT

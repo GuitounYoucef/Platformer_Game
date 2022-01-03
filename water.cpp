@@ -20,13 +20,13 @@ void Water::nextFrame()
 currentFrame=currentFrame+2;
 if (currentFrame>=64)
     currentFrame=0;
- update(0,0,128, 114);
+ update(0,22,128, 114);
 }
 
 QPainterPath Water::shape() const
 {
     QPainterPath path;
-    path.addRect(0, 0, 128, 114);
+    path.addRect(0, 22, 128, 114);
     return path;
 }
 
@@ -39,5 +39,5 @@ void Water::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 QRectF Water::boundingRect() const
 {
-    return QRectF(0,0,128, 114);
+    return QRectF(0,22,128, 114);
 }

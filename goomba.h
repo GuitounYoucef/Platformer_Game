@@ -4,8 +4,9 @@
 #include<QGraphicsPixmapItem>
 #include <QPropertyAnimation>
 #include <QTimer>
-#include"walkers.h"
+
 #include"enemy.h"
+
 
 class Goomba :public Enemy
 {
@@ -17,6 +18,7 @@ public:
 
 
 public slots:
+    QString collideX();
 
     signals:
 

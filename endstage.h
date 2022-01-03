@@ -12,6 +12,8 @@ public:
     void NextMap();
     void setNextmapPath(QString nextmapPath);
     QString getNextmapPath();
+    void ReturnToCheckPoint(QString mapPath);
+
 private:
  QString  nextmapFileLink;
  MyScene *myscene;

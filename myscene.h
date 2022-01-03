@@ -41,6 +41,7 @@ public:
     void newMap(int width,int height,QString fileName);
     void loadMapFromFile(QString filePath);
     void removeAllitemes();
+    void ReturnToCheckPoint();
 
     QGraphicsView *ScenegraphicsView;
 
@@ -62,7 +63,6 @@ private:
  BackgroundImage *background;
  Platform *blockBrikcs;
  Platform *blockMetal;
- Tree * tree;
  Coin *coin;
  Platform *questbox;
  Piranha *piranha;
@@ -70,10 +70,11 @@ private:
  Goomba *goomba[10];
  Koopa *koopa;
  Spiny *spiny;
-
+ QString mapPath=":/mario1.txt";
 
 
  QTimer *timer;
+ QTimer *checkPointtimer;
  QScrollBar* yPos;
 
  QPropertyAnimation * ScrollAnimation;
