@@ -36,5 +36,28 @@
         <file>images/metalBlokEndStage.png</file>
         <file>images/stage3Background.png</file>
         <file>images/water2.png</file>
+        <file>images/marioBreathleft.png</file>
+        <file>images/mariowalkleft.png</file>
+        <file>images/mariowalkright.png</file>
+        <file>images/marioBreathright.png</file>
+        <file>images/star.png</file>
+        <file>images/marioBreathrightFast.png</file>
+        <file>images/marioBreathleftFast.png</file>
+        <file>images/mariowalkrightFast.png</file>
+        <file>images/mariowalkleftFast.png</file>
+        <file>images/marioJumpLeft.png</file>
+        <file>images/marioJumpRight.png</file>
+        <file>images/MarioFireJumpLeft.png</file>
+        <file>images/MarioThrowFireBallLeft.png</file>
+        <file>images/MarioFireWalkLeft.png</file>
+        <file>images/MarioFireJumpRight.png</file>
+        <file>images/MarioThrowFireBallRight.png</file>
+        <file>images/MarioFireWalkRight.png</file>
+        <file>images/MarioFireBreathLeft.png</file>
+        <file>images/MarioFireBreathRight.png</file>
+        <file>images/FireFlower.png</file>
+        <file>images/fireballLeft.png</file>
+        <file>images/fireballRight.png</file>
+        <file>images/koopaShell.png</file>
     </qresource>
 </RCC>

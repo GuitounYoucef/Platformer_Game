@@ -1,6 +1,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#include <QObject>
+
+
 #include<QGraphicsPixmapItem>
 #include <QPropertyAnimation>
 #include <QTimer>
@@ -14,7 +15,7 @@
 
 
 
-class Enemy :public Walkers
+class Enemy :public Walkers,public QGraphicsPixmapItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal y READ y WRITE setY)
@@ -37,6 +38,7 @@ public:
     int height, width;
     QMediaPlayer *DieSound;
     int helth=1;
+    int speed=1;
 
 
 public slots:

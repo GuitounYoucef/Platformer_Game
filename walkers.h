@@ -1,21 +1,20 @@
 #ifndef WALKERS_H
 #define WALKERS_H
-#include <QGraphicsPixmapItem>
+
 #include<QPropertyAnimation>
 #include<QTimer>
 #include <QObject>
 
 
-class Walkers: public QObject,public QGraphicsPixmapItem
+class Walkers: public QObject
 {
-    Q_OBJECT
-    Q_PROPERTY(qreal y READ y WRITE setY)
-    Q_PROPERTY(qreal x READ x WRITE setX)
+
 public:
     explicit Walkers();
 
     void fall(int distance, int startValue, int groundPosition);
     void stopFalling();
+    void quitMap(int ypos);
 
     QPropertyAnimation * yAnimationUp;
     QPropertyAnimation * yAnimationDown;
@@ -28,6 +27,10 @@ public:
     int frameTimer=80;
     int frameDirection=1;
     int direction=0;
+    bool colided=true;
+    bool outMap=false;
+signals:
+
 
 };
 

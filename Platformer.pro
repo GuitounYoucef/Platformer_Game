@@ -24,6 +24,8 @@ SOURCES += \
     coin.cpp \
     endstage.cpp \
     enemy.cpp \
+    fireball.cpp \
+    fireflower.cpp \
     goomba.cpp \
     inanimateobject.cpp \
     koopa.cpp \
@@ -37,6 +39,7 @@ SOURCES += \
     player.cpp \
     questbox.cpp \
     spiny.cpp \
+    star.cpp \
     tree.cpp \
     walkers.cpp \
     water.cpp \
@@ -51,6 +54,8 @@ HEADERS += \
     coin.h \
     endstage.h \
     enemy.h \
+    fireball.h \
+    fireflower.h \
     goomba.h \
     inanimateobject.h \
     koopa.h \
@@ -63,6 +68,7 @@ HEADERS += \
     player.h \
     questbox.h \
     spiny.h \
+    star.h \
     tree.h \
     walkers.h \
     water.h \

@@ -16,6 +16,7 @@
 #include"water.h"
 #include "lake.h"
 #include "tree.h"
+#include "koopa.h"
 
 
 
@@ -35,7 +36,7 @@ MyScene::MyScene(QGraphicsView *graphicsView)
     background= new BackgroundImage();
     background->setPos(-950,-600);
     background->setX(-950);
-    addItem(background);
+ //   addItem(background);
 
 
 //    graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -50,7 +51,8 @@ MyScene::MyScene(QGraphicsView *graphicsView)
     linearGrad.setColorAt(1, Qt::white);
 
      setBackgroundBrush(linearGrad);
-     addPlayer(-400,-400);
+      addPlayer(400,-600);
+
 
 
 //    ScrollAnimation = new QPropertyAnimation(yPos,"value");
@@ -72,15 +74,16 @@ void MyScene::addPlayer(int xpos,int ypos)
     player->setX(xpos);
     player->setY(ypos);
 
-    addItem(player);
     checkPointtimer= new QTimer();
+
+    addItem(player);
     connect(player,&Player::RetCheckPoint,[=](){
-
         ReturnToCheckPoint();
+   });
 
 
 
-    });
+
 }
 
 void MyScene::addPlatform(int xpos,int ypos,int type)
@@ -146,13 +149,18 @@ void MyScene::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Up :
      player->Jump();
+
+     break;
+    case Qt::Key_Down :
+       player->shootFire();
+
      break;
     case Qt::Key_Space :
      player->setMarioSize(1);
      break;
     case Qt::Key_Control :
-     //player->setMarioSize(0);
-        player->setX(0);
+        //player->setMarioSize(0);
+        player->shootFire();
      break;
 
     }
@@ -220,9 +228,10 @@ void MyScene::loadMapFromFile(QString filePath)
             setSceneRect(-900,-900,width*64,height*64);
             QString nextmapPath=li.next();
             QString backgroundPath=li.next();
-            background->setImageFile(backgroundPath);
-            background->setPos(-950,-600);
-            background->setX(-950);
+//            background->setImageFile(backgroundPath);
+//            background->setPos(-950,-600);
+//            background->setX(-950);
+//            background->setOpacity(0.90);
             qDebug()<<width<<height;
 
             for (int i=1;i<=height ;i++ ) {
@@ -232,7 +241,7 @@ void MyScene::loadMapFromFile(QString filePath)
                     {
 
 
-                       // player->setPos(j*64-1500,i*64-1000);
+                      // player->setPos(j*64-1500,i*64-1000);
                     }
                     else
                     if (buf=="P1")
@@ -272,6 +281,18 @@ void MyScene::loadMapFromFile(QString filePath)
                                             addItem(platform);
                                         }
                                         else
+                                            if (buf=="P6")
+                                            {
+                                                Platform *platform = new Platform(6,j*64-1500,i*64-1000);
+                                                addItem(platform);
+                                            }
+                                        else
+                                                if (buf=="P7")
+                                                {
+                                                    Platform *platform = new Platform(7,j*64-1500,i*64-1000);
+                                                    addItem(platform);
+                                                }
+                                                else
                                             if (buf=="GM")
                                             {
                                                 Goomba *goomba= new Goomba(j*64-1500,i*64-1000);
@@ -279,6 +300,13 @@ void MyScene::loadMapFromFile(QString filePath)
 
                                             }
                                             else
+                                                if (buf=="KP")
+                                                {
+                                                    Koopa *koopa= new Koopa(j*64-1500,i*64-1000);
+                                                    addItem(koopa);
+
+                                                }
+                                                else
                                                 if (buf=="CS")
                                                 {
                                                     Castle *castle= new Castle(j*64-1500,i*64-1000,1);
@@ -338,12 +366,12 @@ void MyScene::removeAllitemes()
         InanimateObject * inanimateObject =dynamic_cast<InanimateObject*>(item);
         if (inanimateObject){
                removeItem(item);
-               // delete item;
+                inanimateObject->deleteObj();
           }
         QGraphicsPixmapItem * obj =dynamic_cast<QGraphicsPixmapItem*>(item);
         if ((obj)&&(obj!=background) &&(obj!=player)){
                removeItem(item);
-               // delete item;
+
           }
 
 

@@ -8,6 +8,7 @@ class InanimateObject: public QObject,public QGraphicsItemGroup
     Q_OBJECT
 public:
     InanimateObject();
+    void deleteObj();
 };
 
 #endif // INANIMATEOBJECT_H

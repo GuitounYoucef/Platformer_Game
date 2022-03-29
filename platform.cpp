@@ -71,7 +71,7 @@ Platform::Platform(int platformType,int x,int y)
 
         break;}
     case 4: {
-        questbox= new Questbox();
+        questbox= new Questbox(2);  // Star
         addToGroup(questbox);
         typePlatform=4;
         SeqtouchedAnimation=new QSequentialAnimationGroup;
@@ -82,6 +82,22 @@ Platform::Platform(int platformType,int x,int y)
         Graphicsplateform = new QGraphicsPixmapItem(QPixmap(":/images/metalBlok.png"));
         addToGroup(Graphicsplateform);
         typePlatform=6;
+        break;}
+    case 6: {
+        questbox= new Questbox(1);  // Mushroom
+        addToGroup(questbox);
+        typePlatform=4;
+        SeqtouchedAnimation=new QSequentialAnimationGroup;
+        touchedAnimationUp=new QPropertyAnimation(this,"y");
+        touchedAnimationDown=new QPropertyAnimation(this,"y");
+        break;}
+    case 7: {
+        questbox= new Questbox(3);  //Flower Fire
+        addToGroup(questbox);
+        typePlatform=4;
+        SeqtouchedAnimation=new QSequentialAnimationGroup;
+        touchedAnimationUp=new QPropertyAnimation(this,"y");
+        touchedAnimationDown=new QPropertyAnimation(this,"y");
         break;}
 
     }
@@ -146,12 +162,31 @@ void Platform::Touched()
 
            if (numberItem>0)
            {
-           mushroom= new Mushroom();
-           mushroom->setX(x());
-           mushroom->setY(y());
-           scene()->addItem(mushroom);
-          // addToGroup(mushroom);
-           mushroom->start();
+           if(questbox->obgject==1){
+               mushroom= new Mushroom();
+               mushroom->setX(x());
+               mushroom->setY(y());
+               scene()->addItem(mushroom);
+               // addToGroup(mushroom);
+               mushroom->start();
+           } else
+               if(questbox->obgject==2){
+                   star= new Star();
+                   star->setX(x());
+                   star->setY(y());
+                   scene()->addItem(star);
+                   // addToGroup(mushroom);
+                   star->start();
+               }
+               else
+                   if(questbox->obgject==3){
+                       flower= new Fireflower();
+                       flower->setX(x());
+                       flower->setY(y());
+                       scene()->addItem(flower);
+                       flower->start();
+                   }
+
            numberItem=-numberItem;
            }
         });

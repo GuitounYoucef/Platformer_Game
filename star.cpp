@@ -1,44 +1,16 @@
-#include "mushroom.h"
-#include<QDebug>
-#include<QRandomGenerator>
+#include "star.h"
 #include"platform.h"
 #include"player.h"
-Mushroom::Mushroom()
+
+Star::Star()
 {
-    int x = (QRandomGenerator::global()->generate()) %4;
-
-    switch (x) {
-    case 0:{
-        setPixmap(QPixmap(":/images/mushroom1.png"));
-        break;}
-    case 1:{
-        setPixmap(QPixmap(":/images/mushroom2.png"));
-        break;}
-    case 2:{
-        setPixmap(QPixmap(":/images/mushroom3.png"));
-        break;}
-    case 3: {
-        setPixmap(QPixmap(":/images/mushroom4.png"));
-        break;}
-    case 4: {
-        setPixmap(QPixmap(":/images/mushroom5.png"));
-        break;}
-
-
-    }
-
-    setZValue(-1);
-
-    timer= new QTimer;
+   setPixmap(QPixmap(":/images/star.png"));
+   setZValue(-1);
+   timer= new QTimer;
 }
 
-
-void Mushroom::start()
+void Star::start()
 {
-
-
-
-    qDebug()<<"mushroom start";
     AirState=-1;
     yAnimationUp->stop();
     yAnimationUp->setStartValue(y());
@@ -49,11 +21,11 @@ void Mushroom::start()
     connect(yAnimationUp,&QPropertyAnimation::finished,[=](){
     walk(1);
         });
-
 }
 
-void Mushroom::walk(int direc)
+void Star::walk(int direc)
 {
+    Up(300);
     xAnimation->stop();
     xAnimation->setStartValue(x());
     if (direc==1)
@@ -64,11 +36,26 @@ void Mushroom::walk(int direc)
     groundState=direc;
     AirState=0;
     xAnimation->start();
+
 }
 
+
+void Star::Up(int distance)
+{
+
+    AirState=1;
+    qreal curPosY= y();
+    yAnimationUp->stop();
+    yAnimationUp->setStartValue(curPosY);
+    yAnimationUp->setEndValue(curPosY - distance);
+    yAnimationUp->setEasingCurve(QEasingCurve::OutQuint);
+    yAnimationUp->setDuration(distance);
+    yAnimationUp->start();
+
+}
 //******************************   --Collision Detection --  ******************************************
 
-QString Mushroom::collideX()
+QString Star::collideX()
 {
     qreal t;
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
@@ -97,7 +84,7 @@ QString Mushroom::collideX()
         else
         if (player)
         {
-            player->powerup(2);
+            player->fastState();
             return "player";
 
         }
@@ -105,7 +92,7 @@ QString Mushroom::collideX()
     return "notcolliding";
 }
 //-------------------------------------------------------------------------------------
-QString Mushroom::collideY()
+QString Star::collideY()
 {
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
     foreach(QGraphicsItem * item,collidingItems)
@@ -122,17 +109,17 @@ QString Mushroom::collideY()
 
 //******************************    --Positioning--      *********************************
 
-qreal Mushroom::y() const
+qreal Star::y() const
 {
     return m_y;
 }
 //-------------------------------------------------------------------------------------
-qreal Mushroom::x() const
+qreal Star::x() const
 {
     return m_x;
 }
 //-------------------------------------------------------------------------------------
-void Mushroom::setY(qreal y)
+void Star::setY(qreal y)
 {
     m_y = y;
     if (collideY()!="notcolliding") // colliding
@@ -148,7 +135,7 @@ void Mushroom::setY(qreal y)
     setPos(x(),m_y);
 }
 //-------------------------------------------------------------------------------------
-void Mushroom::setX(qreal x)
+void Star::setX(qreal x)
 {
     m_x = x;
     setPos(m_x,y());

@@ -4,3 +4,8 @@ InanimateObject::InanimateObject()
 {
 
 }
+
+void InanimateObject::deleteObj()
+{
+    delete this;
+}

@@ -23,5 +23,6 @@
         <file>sound/Enemy Fire.wav</file>
         <file>sound/Pause.wav</file>
         <file>sound/break.mp3</file>
+        <file>sound/Bonus Level.mp3</file>
     </qresource>
 </RCC>

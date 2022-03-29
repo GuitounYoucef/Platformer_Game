@@ -12,19 +12,21 @@ class Questbox : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    explicit Questbox();
+    explicit Questbox(int typeObject);
+    int obgject; // 1: mushroom;   2:star
 
 signals:
 private:
 
     QPixmap *spriteImageCoin;
     int currentFrame, line;
+
     void nextFrame();
     QTimer *timer;
 
     QPainterPath shape() const Q_DECL_OVERRIDE;
-     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-   QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
 
 };
 

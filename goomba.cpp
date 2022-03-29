@@ -5,6 +5,7 @@
 Goomba::Goomba(int x,int y)
 {
     SpriteImageWalkLeft= new QPixmap(QPixmap(":/images/goombaWalkLeft.png"));
+
     SpriteImageWalkRight= new QPixmap(QPixmap(":/images/goombaWalkRight.png"));
     SpriteImageWalkLeftDie= new QPixmap(QPixmap(":/images/goombaWalkLeft.png"));
     SpriteImageWalkRightDie= new QPixmap(QPixmap(":/images/goombaWalkRight.png"));
@@ -16,8 +17,7 @@ Goomba::Goomba(int x,int y)
     height=97;
     frameNumber=14;
     start(150);
-
-
+    speed=2;
 }
 
 QString Goomba::collideX()
@@ -34,7 +34,7 @@ QString Goomba::collideX()
 
             t=this->y();
             if ((item->y()<t) )
-                if (((direction==0) && (item->x()>=this->x())) || ((direction==1) && (item->x()<=this->x())) )
+              if (((direction==0) && (item->x()>=this->x())) || ((direction==1) && (item->x()<=this->x())) )
                     return "collide";
         }
         else

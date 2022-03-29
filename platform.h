@@ -15,7 +15,9 @@
 #include"briks.h"
 #include"questbox.h"
 #include"mushroom.h"
+#include"star.h"
 #include"inanimateobject.h"
+#include "fireflower.h"
 
 class Platform :    public InanimateObject
 {
@@ -45,6 +47,8 @@ private:
 
     Questbox *questbox;
     Mushroom *mushroom;
+    Star *star;
+    Fireflower *flower;
 
     Briks * briksArray[15];
     QPropertyAnimation * yAnimationArrayUp[15];

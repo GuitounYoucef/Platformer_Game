@@ -1,12 +1,14 @@
 #include "questbox.h"
 
-Questbox::Questbox()
+Questbox::Questbox(int typeObject)
 {
+    obgject=typeObject;
     currentFrame = 0;
     spriteImageCoin= new QPixmap(QPixmap(":/images/questbox.png"));
     timer = new QTimer();
     connect(timer, &QTimer::timeout, this, &Questbox::nextFrame);
       timer->start(80);
+      setOpacity(0.5);
 
 }
 

@@ -12,30 +12,37 @@
 #include <QPainter>
 #include<QMediaPlayer>
 #include<QThread>
+#include<QGraphicsPixmapItem>
 
 #include"bullet.h"
 #include"backgroundimage.h"
 #include"walkers.h"
+#include "fireball.h"
 
 
 
 class QScrollBar;
 
 
-class Player :   public Walkers
+class Player :   public Walkers,public QGraphicsPixmapItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal x READ x WRITE setX)
     Q_PROPERTY(qreal y READ y WRITE setY)
 public:
     explicit Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,BackgroundImage *background);
+    ~Player();
     void addBackground();
     void Jump();
     void addBullet();
     void walk(int direct,BackgroundImage *background);
     void fall(int distance, int startValue, int groundPosition);
     void stopWalking();
-    void powerup();
+    void powerup(int power);
+    void fastState();
+    void transformSize();
+    void sizeCycle();
+    void shootFire();
 
 
     void Up(int distance);
@@ -46,6 +53,13 @@ public:
     bool UpinAir=false;
     int helth=1;
     BackgroundImage *backgroundimage;
+    int playerWidth=180;
+    int playerHeight=160;
+    int frameLength=192;
+    float speed=1;
+    int marioSize=5; // 0:small , 1:Big, -1:die
+    bool shootingFire=false;
+
 
     bool inGround=true;
     qreal y() const;
@@ -56,10 +70,10 @@ public:
     void die();
     qreal x() const;
     //*********************************************
+   QMediaPlayer *backgroundMusic;
+   QMediaPlayer *DieSound;
 
-        int playerWidth=75;
-        int playerHeight=185;
-    QMediaPlayer *backgroundMusic;
+
 
 signals:
     void RetCheckPoint();
@@ -85,15 +99,19 @@ private:
      QScrollBar *xScrollPos;
      QScrollBar *yScrollPos;
      QParallelAnimationGroup *playerScroll; // group animation player+scrollBar
-     QParallelAnimationGroup *playeryAxeScroll;
-     QParallelAnimationGroup *playeryAxeScrollDown;
+     QParallelAnimationGroup *playeryAxeScroll; //jump
+     QParallelAnimationGroup *playeryAxeScrollDown;  //fall
      int viewWidth;
 
 
     QMediaPlayer *jumpSound;
     QMediaPlayer *powerupSound;
-    QMediaPlayer *DieSound;
+
+    QMediaPlayer *fireBallSound;
     QTimer *dieTimer;
+    QTimer *fastTimer;
+
+    Fireball *fireball;
 
 //*********************************************
 
@@ -108,15 +126,90 @@ private:
     QPixmap * pixItem;
     QTimer *timerSmallMario;
     QTimer *timerBigMario;
+    QTimer *timerMarioSize;
+    QTimer *shootTimer;
+
+    int tranformCount=10;
     Bullet *bullet;
+
     qreal yPos;
     bool collideStat=true;
 
     QPainter *painter;
-    int marioSize=1; // 0:small , 1:Big, -1:die
+
+
+
+
+    int spriteSheetState;  // 111 : SmallMario-Breath-Right
+                               // 112 : SmallMario-Breath-Left
+                               // 121 : SmallMario-Walk-Right
+                               // 122 : SmallMario-Walk-Left
+                               // 131 : SmallMario-Jump-Right
+                               // 132 : SmallMario-Jump-Left
+                               // 191 : SmallMario-JumpFall-Right
+                               // 192 : SmallMario-JumpFall-Left
+
+                                   // 211 : BigMario-Breath-Right
+                                   // 212 : BigMario-Breath-Left
+                                   // 221 : BigMario-Walk-Right
+                                   // 222 : BigMario-Walk-Left
+                                   // 231 : BigMario-Jump-Right
+                                   // 232 : BigMario-Jump-Left
+
+                                   // 311 : FastMario-Breath-Right
+                                   // 312 : FastMario-Breath-Left
+                                   // 321 : FastMario-Walk-Right
+                                   // 322 : FastMario-Walk-Left
+                                   // 331 : FastMario-Jump-Right
+                                   // 332 : FastMario-Jump-Left
+
+                                   // 411 : FireMario-Breath-Right
+                                   // 412 : FireMario-Breath-Left
+                                   // 421 : FireMario-Walk-Right
+                                   // 422 : FireMario-Walk-Left
+                                   // 431 : FireMario-Jump-Right
+                                   // 432 : FireMario-Jump-Left
+                                   // 441 : FireMario-ThrowFire-Right
+                                   // 442 : FireMario-ThrowFire-Left
+
 
     QPixmap *spriteImageBigMario;   // In this QPixmap object will be placed sprite
     QPixmap *spriteImageSmallMario;
+
+    QPixmap *spriteImageBigMarioWalkRight;
+    QPixmap *spriteImageBigMarioWalkLeft;
+    QPixmap *spriteImageBigMarioBreathRight;
+    QPixmap *spriteImageBigMarioBreathLeft;
+
+    QPixmap *spriteImageBigMarioJumpRight;
+    QPixmap *spriteImageBigMarioJumpLeft;
+
+    //Fire Mario
+    QPixmap *spriteImageFireMarioWalkRight;
+    QPixmap *spriteImageFireMarioWalkLeft;
+    QPixmap *spriteImageFireMarioBreathRight;
+    QPixmap *spriteImageFireMarioBreathLeft;
+
+    QPixmap *spriteImageFireMarioJumpRight;
+    QPixmap *spriteImageFireMarioJumpLeft;
+
+    QPixmap *spriteImageFireMarioThrowBallRight;
+    QPixmap *spriteImageFireMarioThrowBallLeft;
+    //**********
+
+    QPixmap *spriteImageBigMarioWalkRightFast;
+    QPixmap *spriteImageBigMarioWalkLeftFast;
+    QPixmap *spriteImageBigMarioBreathRightFast;
+    QPixmap *spriteImageBigMarioBreathLeftFast;
+
+    QPixmap *spriteImageSmallMarioWalkRight;
+    QPixmap *spriteImageSmallMarioWalkLeft;
+    QPixmap *spriteImageSmallMarioBreathRight;
+    QPixmap *spriteImageSmallMarioBreathLeft;
+
+    QPixmap *spriteImageSmallMarioJumpRight;
+    QPixmap *spriteImageSmallMarioJumpLeft;
+
 
 
 

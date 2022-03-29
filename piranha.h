@@ -15,6 +15,7 @@ class Piranha : public QObject,public QGraphicsPixmapItem
     Q_PROPERTY(qreal y READ y WRITE setY)
 public:
     explicit Piranha();
+    void die();
 
     qreal y() const;
 

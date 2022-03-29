@@ -1,5 +1,7 @@
 #include "player.h"
 #include<QGraphicsView>
+#include<QGraphicsEffect>
+#include<QColor>
 #include"platform.h"
 #include"inanimateobject.h"
 #include"coin.h"
@@ -12,6 +14,8 @@
 #include"castle.h"
 #include"endstage.h"
 #include "lake.h"
+#include "fireflower.h"
+
 
 
 
@@ -23,15 +27,74 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
     currentFrame = 0;
     spriteImageBigMario = new QPixmap(QPixmap(":/images/BigMarioSprite.png"));
     spriteImageSmallMario = new QPixmap(QPixmap(":/images/mario-sprite-png.png"));
+    // Fire Mario Sprite sheet
+    //Walk
+    spriteImageFireMarioWalkRight = new QPixmap(QPixmap(":/images/MarioFireWalkRight.png"));
+    spriteImageFireMarioWalkLeft = new QPixmap(QPixmap(":/images/MarioFireWalkLeft.png"));
+    //Jump
+    spriteImageFireMarioJumpRight = new QPixmap(QPixmap(":/images/MarioFireJumpRight.png"));
+    spriteImageFireMarioJumpLeft = new QPixmap(QPixmap(":/images/MarioFireJumpLeft.png"));
+    //Breath
+    spriteImageFireMarioBreathRight = new QPixmap(QPixmap(":/images/MarioFireBreathRight.png"));
+    spriteImageFireMarioBreathLeft = new QPixmap(QPixmap(":/images/MarioFireBreathLeft.png"));
+    //Throw FireBall
+    spriteImageFireMarioThrowBallRight = new QPixmap(QPixmap(":/images/MarioThrowFireBallRight.png"));
+    spriteImageFireMarioThrowBallLeft = new QPixmap(QPixmap(":/images/MarioThrowFireBallLeft.png"));
+
+    // Big Mario Sprite sheet
+    //Walk
+    spriteImageBigMarioWalkRight = new QPixmap(QPixmap(":/images/mariowalkright.png"));
+    spriteImageBigMarioWalkLeft = new QPixmap(QPixmap(":/images/mariowalkleft.png"));
+    //Jump
+    spriteImageBigMarioJumpRight = new QPixmap(QPixmap(":/images/marioJumpRight.png"));
+    spriteImageBigMarioJumpLeft = new QPixmap(QPixmap(":/images/marioJumpLeft.png"));
+    //Breath
+    spriteImageBigMarioBreathRight = new QPixmap(QPixmap(":/images/marioBreathright.png"));
+    spriteImageBigMarioBreathLeft = new QPixmap(QPixmap(":/images/marioBreathleft.png"));
+    // Big Mario Sprite sheet Fast
+    //Walk
+    spriteImageBigMarioWalkRightFast = new QPixmap(QPixmap(":/images/mariowalkrightFast.png"));
+    spriteImageBigMarioWalkLeftFast = new QPixmap(QPixmap(":/images/mariowalkleftFast.png"));
+    //Breath
+    spriteImageBigMarioBreathRightFast = new QPixmap(QPixmap(":/images/marioBreathrightFast.png"));
+    spriteImageBigMarioBreathLeftFast = new QPixmap(QPixmap(":/images/marioBreathleftFast.png"));
+
+    // Small Mario Sprite sheet
+    //Walk
+    spriteImageSmallMarioWalkRight = new QPixmap(QPixmap(":/images/mariowalkright.png"));
+    *spriteImageSmallMarioWalkRight =spriteImageBigMarioWalkRight->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+
+    spriteImageSmallMarioWalkLeft = new QPixmap(QPixmap(":/images/mariowalkleft.png"));
+    *spriteImageSmallMarioWalkLeft =spriteImageBigMarioWalkLeft->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+    //Breath
+    spriteImageSmallMarioBreathRight = new QPixmap(QPixmap(":/images/marioBreathright.png"));
+    *spriteImageSmallMarioBreathRight =spriteImageBigMarioBreathRight->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+
+    spriteImageSmallMarioBreathLeft = new QPixmap(QPixmap(":/images/marioBreathleft.png"));
+    *spriteImageSmallMarioBreathLeft=spriteImageBigMarioBreathLeft->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+
+    spriteImageSmallMarioJumpRight = new QPixmap(QPixmap(":/images/marioJumpRight.png"));
+    *spriteImageSmallMarioJumpRight =spriteImageBigMarioJumpRight->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+
+    spriteImageSmallMarioJumpLeft = new QPixmap(QPixmap(":/images/marioJumpLeft.png"));
+    *spriteImageSmallMarioJumpLeft=spriteImageBigMarioJumpLeft->scaled(3072, 192, Qt::AspectRatioMode::IgnoreAspectRatio,Qt::TransformationMode::SmoothTransformation);
+//==================================================================
     backgroundAnimation = new QPropertyAnimation(background,"x");
     imageXpos=background->x();
     backgroundimage=background;
     line=200;
     timerSmallMario = new QTimer();
     timerBigMario = new QTimer();
+    fastTimer = new QTimer();
+    timerMarioSize = new QTimer();
+    shootTimer = new QTimer();
     connect(timerSmallMario, &QTimer::timeout, this, &Player::nextFrameSmallMario);
     connect(timerBigMario, &QTimer::timeout, this, &Player::nextFrameBigMario);
     timerBigMario->start(frameTimer);
+
+    connect(timerMarioSize,&QTimer::timeout, this,&Player::sizeCycle);
+
+
 
     groundPosition=500;
     yPos=groundPosition;
@@ -72,22 +135,29 @@ Player::Player(QGraphicsView *graphicsView,QGraphicsScene *scenePlayer,Backgroun
 
     backgroundMusic=new QMediaPlayer();
     backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
-    backgroundMusic->setVolume(50);
-    backgroundMusic->play();
+    backgroundMusic->setVolume(0);
+   // backgroundMusic->play();
+    setZValue(5);
+    stopWalking();
+    spriteSheetState=111;
 
+    fireBallSound =new QMediaPlayer();
+    fireBallSound->setMedia(QUrl("qrc:/sound/sound/Fire Ball.wav"));
+    fall(groundPosition-y(),y(),groundPosition);
+
+
+
+
+}
+
+Player::~Player()
+{
+emit RetCheckPoint();
 }
 
 
 //******************************   --Movement--  ******************************************
-void Player::Jump()
-{
-    UpinAir=false;
-    frameTimer=playerHeight/24;
-    currentFrame=0;
-    Up(playerHeight*3);
-    Down();
-}
-//-------------------------------------------------------------------------------------
+
 void Player::addBullet()
 {
     bullet = new Bullet(x(),direction);
@@ -98,23 +168,31 @@ void Player::addBullet()
 //-------------------------------------------------------------------------------------
 void Player::walk(int dirc,BackgroundImage *background)
 {
-    frameTimer=80;
+    if (dirc==0)
+    spriteSheetState=((spriteSheetState/10)*10)+1;        //**1
+    else spriteSheetState=((spriteSheetState/10)*10)+2;   //**2
+
+    frameTimer=60;
     direction=dirc;
     int step;
     int duration;
     xAnimation->stop();
     xScrollAnimation->stop();
     backgroundAnimation->stop();
+
     if (AirState==0)
     {
         step=1200;
-        duration=2100;
+        spriteColumn=4096*frameLength/256;
+        spriteSheetState=((spriteSheetState/100)*100)+20+(spriteSheetState%10); //*2*
+        qDebug()<<"spriteSheetState walk :: "<<spriteSheetState;
+
     }
     else
     {
         step=600;
-        duration=2100;
     }
+    duration=2100/speed;
     xAnimation->setStartValue(x());
     xScrollAnimation->setStartValue(xScrollPos->value());
     backgroundAnimation->setStartValue(background->x());
@@ -165,44 +243,63 @@ void Player::walk(int dirc,BackgroundImage *background)
 //-------------------------------------------------------------------------------------
 void Player::stopWalking()
 {
+ spriteSheetState=((spriteSheetState/100)*100)+10+(spriteSheetState%10);
  playerScroll->stop();
  xAnimation->stop();
  groundState=0;
  frameTimer=200;
+ spriteColumn=4096*frameLength/256;
 }
-//-------------------------------------------------------------------------------------
-void Player::powerup()
-{
-if (marioSize==0){
-    setMarioSize(1);
-}
-powerupSound->stop();
-powerupSound->play();
-}
+
+
+
 //-------------------------------------------------------------------------------------
 void Player::die()
 {
-helth=0;
-DieSound->play();
-stopWalking();
-stopFalling();
 setY(-500);
-backgroundMusic->stop();
+backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
+//if (helth>1)
+  // helth=1;
+setMarioSize(0);
+frameLength=192;
+//if(helth==0)
+{
+
+    stopWalking();
+    stopFalling();
+    colided=true;
+
+    backgroundMusic->stop();
+    emit RetCheckPoint();
+    fall(groundPosition-y(),y(),groundPosition);
+}
+}
+//-------------------------------------------------------------------------------------
+void Player::Jump()
+{
+    UpinAir=false;
 
 
-emit RetCheckPoint();
+    spriteColumn=4096*frameLength/256;
+    currentFrame=0;
+    Up(playerHeight*3);
+    Down();
 }
 //-------------------------------------------------------------------------------------
 void Player::Up(int distance)
 {
+
+
+    frameTimer=5;
     if (AirState==0)
     {
+        spriteSheetState=((spriteSheetState/100)*100)+30+(spriteSheetState%10);  //*3*
+        qDebug()<<"spriteSheetState :: "<<spriteSheetState;
     UpinAir=true;
     AirState=1;
     qreal curPosY= y();
     jumpSound->stop();
     jumpSound->play();
-
 
     yScrollAnimationUp->setStartValue(yScrollPos->value());
     int  x=yScrollPos->value() - distance/2;
@@ -212,8 +309,8 @@ void Player::Up(int distance)
 
     yAnimationUp->setStartValue(curPosY);
     yAnimationUp->setEndValue(curPosY - distance);
-    yAnimationUp->setEasingCurve(QEasingCurve::OutQuint);
-    yAnimationUp->setDuration(distance/3*4);
+    yAnimationUp->setEasingCurve(QEasingCurve::OutQuad);
+    yAnimationUp->setDuration(distance);
 
     playeryAxeScroll->start();
     //yAnimationUp->start();
@@ -222,10 +319,14 @@ void Player::Up(int distance)
 //-------------------------------------------------------------------------------------
 void Player::Down()
 {
+
     connect(playeryAxeScroll,&QPropertyAnimation::finished,[=](){
         if (y()< groundPosition)
         {
             AirState=2;
+
+            spriteSheetState=((spriteSheetState/100)*100)+90+(spriteSheetState%10);  //*9*
+
             fall(groundPosition-y(),y(),groundPosition);
 
         }
@@ -233,9 +334,11 @@ void Player::Down()
 }
 void Player::fall(int distance, int startValue, int groundPosition)
 {
+
     AirState=2;
+    frameTimer=35;
     yScrollAnimationDown->setStartValue(yScrollPos->value());
-    int  x=yScrollPos->value() + abs(distance)/2;
+    int x=yScrollPos->value() + abs(distance)/2+100;
     yScrollAnimationDown->setEndValue(x);
     yScrollAnimationDown->setEasingCurve(QEasingCurve::Linear);
     yScrollAnimationDown->setDuration(abs(distance));
@@ -243,13 +346,12 @@ void Player::fall(int distance, int startValue, int groundPosition)
 
     yAnimationDown->setStartValue(startValue);
     yAnimationDown->setEndValue(groundPosition);
-    yAnimationDown->setEasingCurve(QEasingCurve::Linear);
-    yAnimationDown->setDuration(abs(distance));
+    yAnimationDown->setEasingCurve(QEasingCurve::OutQuad);
+    yAnimationDown->setDuration(abs((distance*3)/2));
     playeryAxeScrollDown->start();
     //yAnimationDown->start();
     connect(playeryAxeScrollDown,&QPropertyAnimation::finished,[=](){
         frameTimer=80;
-
     });
 }
 //******************************   --Collision Detection --  ******************************************
@@ -263,6 +365,7 @@ bool Player::collideX()
         Coin * coin =dynamic_cast<Coin*>(item);
         Castle * caslte =dynamic_cast<Castle*>(item);
         EndStage * endStage =dynamic_cast<EndStage*>(item);
+        Fireflower * flower =dynamic_cast<Fireflower*>(item);
 
         if ((inanimateObject) && (!caslte))
         {
@@ -283,6 +386,13 @@ bool Player::collideX()
               stopWalking();
               endStage->NextMap();
           }
+          else
+           if (flower)
+           {
+               powerup(4);
+               flower->taken();
+
+           }
 
     }
     return false;
@@ -290,18 +400,21 @@ bool Player::collideX()
 //-------------------------------------------------------------------------------------
 QString Player::collideY()
 {
+  if (colided)
+  {
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
     foreach(QGraphicsItem * item,collidingItems)
     {
         Platform * platform =dynamic_cast<Platform*>(item);
         Lake *lake=dynamic_cast<Lake*>(item);
+        Koopa *koopa=dynamic_cast<Koopa*>(item);
         if (platform)
         {
             qreal t;
             t=this->y();
             if ((item->y()<t))
             {
-                qDebug()<<"Head collide";
+               // qDebug()<<"Head collide";
                 if (platform->getPlatformType()==3)
                     platform->destroyPlatform();
                 else if (platform->getPlatformType()==4)
@@ -310,21 +423,33 @@ QString Player::collideY()
                     return "head";
             }
             else
-                if ((item->y()>t))
+                if (item->y()>t)
                 {
                     //qDebug()<<"foots";
                     playeryAxeScrollDown->stop();
-
-                    return "foots";
+                   return "foots";
                 }
-
         }
         else
          if ((lake) &&(helth>0) &&(lake->y()<y()-280))
          {
              die();
          }
+        else if (koopa)
+         {
+             setY(y()-10);
+             AirState=0;
+             Up(200);
+             Down();
+             if(x()<koopa->x())
+                 koopa->groundState=1;
+             else koopa->groundState=2;
+                 koopa->hit();
+                 return "koopa";
+
+         }
     }
+  }
     return "notcolliding";
 }
 
@@ -343,30 +468,51 @@ qreal Player::x() const
 void Player::setY(qreal y)
 {
     m_y = y;
+
     setPos(x(),m_y);
+
+
     if (collideY()!="notcolliding") // colliding
     {
+
         if ((collideY()=="foots") && (marioSize!=-1) && (AirState==2))
         {
+
             playeryAxeScrollDown->stop();
             m_y=y-10;
             if (AirState!=0)
+            {
                 AirState=0;
+                if (groundState==0)
+                  spriteSheetState=((spriteSheetState/100)*100)+10+(spriteSheetState%10); // *1*
+                qDebug()<<"spriteSheetState after fall :: "<<spriteSheetState;
+
+            }
             frameTimer=80;
+
         }
         else
             if ((collideY()=="head") && (AirState==1))  // head collide
             {
                 if (AirState!=0)
                     AirState=0;
-                qDebug()<<"Head ****";               
+            //    qDebug()<<"Head ****";
                 playeryAxeScroll->stop();
                 setPos(QPoint(0,0)+QPoint(x(),y+20));
                 fall(groundPosition-y+20,y+20,groundPosition);
 
             }
+
+
     }
 
+
+    if(y>450)
+            {
+
+                die();
+
+            }
 
 }
 //-------------------------------------------------------------------------------------
@@ -403,144 +549,164 @@ void Player::setMarioSize(int size)  //0:small   1:big
     currentFrame=0;
     if (size==0)
     {
-        playerWidth=38;
-        playerHeight=93;
-        shape();
-        timerBigMario->stop();
-        connect(timerSmallMario, &QTimer::timeout, this, &Player::nextFrameSmallMario);
-        timerSmallMario->start(frameTimer);
-        setY(y()+playerHeight);
+        playerHeight=160;
+        speed=1;
+        frameLength=192;
+        setY(y()+64);
     }
     else
     {
-        playerWidth=75;
-        playerHeight=185;
-        shape();
-        timerSmallMario->stop();
-        connect(timerBigMario, &QTimer::timeout, this, &Player::nextFrameBigMario);
-        timerBigMario->start(frameTimer);
-        setY(y()-playerHeight/2);
+        speed=1.5;
+        playerHeight=210;
+        frameLength=256;
+        setY(y()-64);
+
     }
+}
+//-------------------------------------------------------------------------------------
+void Player::powerup(int power)
+{
+transformSize();
+
+helth=power;
+spriteSheetState=(power*100)+(spriteSheetState%100);
+powerupSound->stop();
+powerupSound->play();
+}
+
+void Player::transformSize()
+{
+    timerMarioSize->start(60);
+
+}
+
+void Player::sizeCycle()
+{
+
+    if (marioSize==0)
+    {
+    setMarioSize(1);
+    }
+  else {
+      setMarioSize(0);
+    }
+    if (tranformCount==0)
+    {
+        timerMarioSize->stop();
+        tranformCount=10;
+        if(helth==0)
+            setMarioSize(0);
+        else setMarioSize(1);
+    }
+    tranformCount--;
+}
+
+
+
+void Player::fastState()
+{
+    if (helth>0)
+   {
+   helth=4;
+   speed=2;
+   backgroundMusic->pause();
+   backgroundMusic->stop();
+   backgroundMusic->setMedia(QUrl("qrc:/sound/sound/Bonus Level.mp3"));
+
+   backgroundMusic->play();
+   fastTimer->start(12000);
+   connect(fastTimer,&QTimer::timeout, this,[=](){
+       speed=1.5;
+       backgroundMusic->setMedia(QUrl("qrc:/sound/sound/overworld.ogg"));
+       backgroundMusic->stop();
+       backgroundMusic->play();
+       helth=2;
+       fastTimer->stop();
+   });
+
+    }
+}
+
+void Player::shootFire()
+{
+if (spriteSheetState/100==4)
+{
+spriteSheetState=((spriteSheetState/100)*100)+40+(spriteSheetState%10);
+if (!shootingFire)
+    currentFrame=0;
+frameTimer=40;
+  {
+    spriteColumn=2048*frameLength/256;
+    shootingFire=true;
+
+    connect(shootTimer,&QTimer::timeout, this,[=]{
+        fireball= new Fireball(x()+50,y()+100,direction);
+        this->scene()->addItem(fireball);
+        fireBallSound->stop();
+        fireBallSound->play();
+        stopWalking();
+        spriteSheetState=((spriteSheetState/100)*100)+10+(spriteSheetState%10);
+        shootingFire=false;
+        shootTimer->stop();
+        frameTimer=80;
+    });
+    shootTimer->start(300);
+  }
+}
 }
 //-------------------------------------------------------------------------------------
 void Player::nextFrameBigMario()
 {
-    spriteColumn=3800;
-    if (AirState!=0)  // jumping animation
-    {
-        spriteColumn=2834;
-        if (direction==0) // left
-            line=2535;
-        else if (direction==1) // right
-            line=2796;
 
-        if((frameTimer<playerHeight*7/4) &&(AirState==1) )
-            frameTimer=frameTimer*2;
-        else if (frameTimer>160)
-            frameTimer=frameTimer/2;
-    }
-    else
-    {
-        if (groundState==1)
-        {
-            line=1536;
-        }
-        else if (groundState==2)
-        {
-            line=1792;
-        }
-        else
-        {
-            if (direction==0)
-                line=0;
-            else line=256;
-        }
-    }
-    if (frameDirection==1)
-        currentFrame += 256;
-    else currentFrame -= 256;
-    if ((currentFrame >= spriteColumn ) ){
-        if (spriteColumn==3800)
-        {
-            currentFrame =0;
-            frameDirection=+1;
-        }
-        else
-        {
-            currentFrame -= 256;
 
-            frameDirection=-1;
-        }
-    }
-    if (currentFrame <0 )
+    int x=spriteSheetState%100;
+    switch (x) {
+    case 11:
+    case 21:
+    case 41:
     {
-        currentFrame =0;
-        frameDirection=1;
+        if(currentFrame>=spriteColumn-frameLength)
+             currentFrame=0;
+        else currentFrame += frameLength;
+        break;
     }
+    case 12:
+    case 22:
+    case 42:
+    {
+        if (currentFrame<frameLength)
+            currentFrame=spriteColumn-frameLength;
+        else currentFrame -= frameLength;
+        break;
+    }
+    // Jump Up
+    case 31:
+    case 92:
+    {
+        if(currentFrame<spriteColumn-frameLength)
+             currentFrame += frameLength;
+        break;
+    }
+    case 32:
+    case 91:
+    {
+        if (currentFrame>=frameLength)
+            currentFrame -= frameLength;
+        break;
+    }
+
+    }
+
     timerBigMario->stop();
     timerBigMario->start(frameTimer);
 
-    update(0,0,256,256);
+    update(0,0,frameLength,frameLength);
+
 }
 //-------------------------------------------------------------------------------------
 void Player::nextFrameSmallMario()
 {
-    spriteColumn=3800;
-    if (AirState!=0)  // jumping animation
-    {
-        spriteColumn=2834;
-        if (direction==0) // left
-            line=2535;
-        else if (direction==1) // right
-            line=2796;
 
-        if((frameTimer<playerHeight*7/4) &&(AirState==1) )
-            frameTimer=frameTimer*2;
-        else if (frameTimer>160)
-            frameTimer=frameTimer/2;
-    }
-    else
-    {
-        if (groundState==1)
-        {
-            line=1536;
-        }
-        else if (groundState==2)
-        {
-            line=1792;
-        }
-        else
-        {
-            if (direction==0)
-                line=0;
-            else line=256;
-        }
-    }
-    if (frameDirection==1)
-        currentFrame += 256;
-    else currentFrame -= 256;
-    if ((currentFrame >= spriteColumn ) ){
-        if (spriteColumn==3800)
-        {
-            currentFrame =0;
-            frameDirection=+1;
-        }
-        else
-        {
-            currentFrame -= 256;
-
-            frameDirection=-1;
-        }
-    }
-    if (currentFrame <0 )
-    {
-        currentFrame =0;
-        frameDirection=1;
-    }
-    timerBigMario->stop();
-    timerBigMario->start(frameTimer);
-
-    update(0,0,256,256);
 }
 
 //*******************************************************************************************
@@ -549,22 +715,78 @@ void Player::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    if (marioSize==0)
-    painter->drawPixmap(0,0, *spriteImageSmallMario, currentFrame, line, 128,100);
+  //  qDebug()<<"spriteSheetState paint :: "<<spriteSheetState;
+
+    if(shootingFire){
+        switch (spriteSheetState) {
+        //Fire mario Throw FireBall
+        case 441:{ painter->drawPixmap(0,0, *spriteImageFireMarioThrowBallRight, currentFrame, 0, frameLength,frameLength); break;}
+        case 442:{ painter->drawPixmap(0,0, *spriteImageFireMarioThrowBallLeft, currentFrame, 0, frameLength,frameLength); break;}
+        }
+    }
     else
-     painter->drawPixmap(0,0, *spriteImageBigMario, currentFrame, line, 180,200);
+    {
+    switch (spriteSheetState) {
+    //small mario
+    case 111:{ painter->drawPixmap(0,0, *spriteImageSmallMarioBreathRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 112:{ painter->drawPixmap(0,0, *spriteImageSmallMarioBreathLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 121:{ painter->drawPixmap(0,0, *spriteImageSmallMarioWalkRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 122:{ painter->drawPixmap(0,0, *spriteImageSmallMarioWalkLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 131:
+    case 191:{ painter->drawPixmap(0,0, *spriteImageSmallMarioJumpRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 132:
+    case 192:{ painter->drawPixmap(0,0, *spriteImageSmallMarioJumpLeft, currentFrame, 0, frameLength,frameLength); break;}
+    //Big mario + Fast Mario
+    case 311:
+    case 211:{if ((speed==2) && ((currentFrame/256)%2==0))
+               painter->drawPixmap(0,0, *spriteImageBigMarioBreathRightFast, currentFrame, 0, frameLength,frameLength);
+              else
+              painter->drawPixmap(0,0, *spriteImageBigMarioBreathRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 312:
+    case 212:{if ((speed==2) && ((currentFrame/256)%2==0))
+                painter->drawPixmap(0,0, *spriteImageBigMarioBreathLeftFast, currentFrame, 0, frameLength,frameLength);
+               else
+               painter->drawPixmap(0,0, *spriteImageBigMarioBreathLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 321:
+    case 221:{if ((speed==2) && ((currentFrame/256)%2==0))
+                    painter->drawPixmap(0,0, *spriteImageBigMarioWalkRightFast, currentFrame, 0, frameLength,frameLength);
+               else
+               painter->drawPixmap(0,0, *spriteImageBigMarioWalkRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 322:
+    case 222:{ if ((speed==2) && ((currentFrame/256)%2==0))
+                  painter->drawPixmap(0,0, *spriteImageBigMarioWalkLeftFast, currentFrame, 0, frameLength,frameLength);
+                else
+                painter->drawPixmap(0,0, *spriteImageBigMarioWalkLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 231:
+    case 291:{  painter->drawPixmap(0,0, *spriteImageBigMarioJumpRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 232:
+    case 292:{  painter->drawPixmap(0,0, *spriteImageBigMarioJumpLeft, currentFrame, 0, frameLength,frameLength); break;}
+    // Fire Mario
+    case 411:{ painter->drawPixmap(0,0, *spriteImageFireMarioBreathRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 412:{ painter->drawPixmap(0,0, *spriteImageFireMarioBreathLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 421:{ painter->drawPixmap(0,0, *spriteImageFireMarioWalkRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 422:{ painter->drawPixmap(0,0, *spriteImageFireMarioWalkLeft, currentFrame, 0, frameLength,frameLength); break;}
+    case 431:
+    case 491:{ painter->drawPixmap(0,0, *spriteImageFireMarioJumpRight, currentFrame, 0, frameLength,frameLength); break;}
+    case 432:
+    case 492:{ painter->drawPixmap(0,0, *spriteImageFireMarioJumpLeft, currentFrame, 0, frameLength,frameLength); break;}
+    }
+
+}
 }
 QRectF Player::boundingRect() const
 {
-    return QRectF(0,0,180,250);
+    return QRectF(0,0,frameLength,frameLength);
 }
 QPainterPath Player::shape() const
 {
     QPainterPath path;
-    if (marioSize==0)
-        path.addRect(35/2, 0, playerWidth, playerHeight);
-    else
-        path.addRect(35, 0, playerWidth, playerHeight);
+    if (marioSize==1)
+    {
+        path.addRect(30, 0, 100, 210);
+    } else     {
+        path.addRect(21, 0, 100, 160);
+    }
     return path;
 }
 

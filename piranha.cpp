@@ -31,6 +31,11 @@ Piranha::Piranha()
 
 }
 
+void Piranha::die()
+{
+    delete this;
+}
+
 qreal Piranha::y() const
 {
     return m_y;

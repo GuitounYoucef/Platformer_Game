@@ -88,9 +88,9 @@ void Enemy::walk()
     xAnimation->stop();
     xAnimation->setStartValue(x());
     if (groundState==1)
-        xAnimation->setEndValue(x()+400);
-    else xAnimation->setEndValue(x()-400);
-    xAnimation->setDuration(6000);
+        xAnimation->setEndValue(x()+400*speed);
+    else xAnimation->setEndValue(x()-400*speed);
+    xAnimation->setDuration(4000/speed);
     //xAnimation->setEasingCurve(QEasingCurve::OutSine);
     xAnimation->setEasingCurve(QEasingCurve::Linear);
 
@@ -114,19 +114,19 @@ void Enemy::setX(qreal x)
 {
     m_x = x;
     setPos(m_x,y());
-    qDebug()<<xAnimation->currentTime();
+  //  qDebug()<<xAnimation->currentTime();
 
-    if ((xAnimation->currentTime() >=6000) || collideX()=="platform")
+    if ((xAnimation->currentTime() >=4000/speed) || collideX()=="platform")
       {
        if (groundState==1)
            groundState=2;
        else groundState=1;
        walk();
        }
-        if (collideY()=="notcolliding")
+        if ((collideY()=="notcolliding")&&(colided))
         {
             if (AirState==0)
-                fall(1000-y(),y(),500);
+                fall(1000+y(),y(),500);
         }
      else
       if ((collideX()=="die") &&(helth>0))
@@ -140,7 +140,7 @@ void Enemy::setY(qreal y)
     if (collideY()!="notcolliding") // colliding
     {
 
-        if ((collideY()=="foots") && (AirState==2))
+        if ((collideY()=="foots") && (AirState==2) &&(colided))
         {
             stopFalling();
             walk();
@@ -155,21 +155,27 @@ void Enemy::setY(qreal y)
 //-------------------------------------------------------------------------------------
 QString Enemy::collideY()
 {
+ if (colided)
+  {
+
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
     foreach(QGraphicsItem * item,collidingItems)
     {
         Platform * platform =dynamic_cast<Platform*>(item);
-        if ((platform) && (AirState!=-1))
+        if ((platform) && (AirState!=-1) && (colided))
         {
-            qDebug()<<"Goomba collide";
+            //qDebug()<<"Goomba collide";
                   if ((platform->getPlatformType()!=-1) || (platform->getPlatformType()!=4))
                     return "foots";
         }
     }
+ }
     return "notcolliding";
 }
 
 QString Enemy::collideX()
+{
+if (colided)
 {
     qreal t;
     QList<QGraphicsItem*> collidingItems=this->collidingItems();
@@ -180,15 +186,21 @@ QString Enemy::collideX()
         Player * player =dynamic_cast<Player*>(item);
         if (player)
         {
-          if((player->y()+player->playerHeight/2<this->y()) &&(player->helth>0))
+          if(((player->y()+player->playerHeight/2<this->y()) &&(player->helth>0)) || (player->helth==4))
+          {
+              player->AirState=0;
+              player->Up(200);
+              player->Down();
               return "die";
+          }
           else
           {
-          player->die();
+          player->quitMap(player->y());
           return "plyer";
           }
         }
 //        }
     }
+}
     return "notcolliding";
 }

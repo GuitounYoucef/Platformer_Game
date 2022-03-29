@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "myscene.h"
+#include <QGraphicsScene>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -19,6 +21,8 @@ public:
 private:
     Ui::Widget *ui;
     MyScene * scene;
+    QGraphicsScene * scene2;
+    QGraphicsRectItem *rect;
 
 };
 #endif // WIDGET_H
